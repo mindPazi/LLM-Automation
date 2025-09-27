@@ -43,6 +43,9 @@ def main():
                 if file_path.endswith('_test.json') or file_path.endswith('_report.json'):
                     continue
                 
+                if file_path.lower() in ['readme.md', 'readme.txt', 'readme.rst', 'readme']:
+                    continue
+                
                 for line_num, line in enumerate(change['added_lines'], 1):
                     for pattern in suspicious_patterns:
                         if pattern.lower() in line.lower():
