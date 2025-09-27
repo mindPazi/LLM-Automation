@@ -26,20 +26,24 @@ pip3 install gitpython
 ## Usage
 
 ```bash
-# Scan the current repository (last 10 commits)
-python3 scan.py
+# Scan a single commit
+python3 scan.py --from HEAD
 
-# Scan the last 20 commits and save the report
-python3 scan.py --repo . --n 20 --out report.json
+# Scan commits between two references
+python3 scan.py --from HEAD~5 --to HEAD
+
+# Scan commits between specific hashes
+python3 scan.py --from abc123 --to def456
 
 # Complete example
-python3 scan.py --repo /path/to/repo --n 5 --out findings.json
+python3 scan.py --repo /path/to/repo --from main~10 --to main --out findings.json
 ```
 
 ### Parameters
 
 - `--repo`: Path to the Git repository (default: '.')
-- `--n`: Number of commits to analyze (default: 10)
+- `--from`: Start commit (hash or reference) - REQUIRED
+- `--to`: End commit (hash or reference) - Optional, if not provided only the --from commit is scanned
 - `--out`: Output file for the JSON report (default: 'report.json')
 
 ## Report Structure

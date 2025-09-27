@@ -12,6 +12,19 @@ class GitHandler:
             commits.append(commit)
         return commits
     
+    def get_commits_range(self, start_commit, end_commit=None):
+        commits = []
+        if end_commit:
+            rev_range = f"{start_commit}..{end_commit}"
+            for commit in self.repo.iter_commits(rev_range):
+                commits.append(commit)
+        else:
+            rev_range = f"{start_commit}^..{start_commit}"
+            for commit in self.repo.iter_commits(rev_range):
+                commits.append(commit)
+        
+        return commits
+    
     def get_commit_diff(self, commit_hash):
         commit = self.repo.commit(commit_hash)
         if commit.parents:
@@ -27,7 +40,7 @@ class GitHandler:
             diffs = commit.diff(None, create_patch=True)
         else:
             parent = commit.parents[0]
-            diffs = commit.diff(parent, create_patch=True)
+            diffs = parent.diff(commit, create_patch=True)
         
         for diff_item in diffs:
             change = {
