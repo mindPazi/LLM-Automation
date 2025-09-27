@@ -1,6 +1,6 @@
 import argparse
 import json
-from git_secret_scanner.git_handler import GitHandler
+from src.git_secret_scanner.git_handler import GitHandler
 
 def main():
     parser = argparse.ArgumentParser(description='Scan Git repository for secrets')
@@ -22,7 +22,7 @@ def main():
         for commit in commits:
             print(f"Checking commit {commit.hexsha[:8]}...")
             
-            # Per ora facciamo una ricerca molto semplice di pattern sospetti
+            
             suspicious_patterns = ['password', 'secret', 'api_key', 'token', 'private_key']
             
             for pattern in suspicious_patterns:
@@ -38,7 +38,7 @@ def main():
                     }
                     findings.append(finding)
         
-        # Salva il report
+        
         with open(args.out, 'w') as f:
             json.dump({
                 'repository': args.repo,

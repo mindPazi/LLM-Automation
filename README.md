@@ -1,49 +1,49 @@
 # Git Secret Scanner
 
-Un tool semplice per scansionare repository Git alla ricerca di potenziali segreti o dati sensibili.
+A simple tool to scan Git repositories for potential secrets or sensitive data.
 
-## Descrizione
+## Description
 
-Questo progetto fornisce un comando CLI che analizza i commit di un repository Git per rilevare potenziali segreti o informazioni sensibili. 
+This project provides a CLI command that analyzes Git repository commits to detect potential secrets or sensitive information.
 
-Attualmente implementa:
-- Lettura degli ultimi N commit da un repository Git
-- Ricerca di parole chiave sospette nei messaggi di commit
-- Generazione di report JSON con i risultati
+Currently implements:
+- Reading the last N commits from a Git repository
+- Searching for suspicious keywords in commit messages
+- Generating JSON reports with the results
 
-## Installazione
+## Installation
 
 ```bash
-# Clona il repository
+# Clone the repository
 git clone https://github.com/mindPazi/LLM-Automation.git
 cd LLM-Automation
 
-# Installa le dipendenze
+# Install dependencies
 pip3 install gitpython
 ```
 
-## Utilizzo
+## Usage
 
 ```bash
-# Scansiona il repository corrente (ultimi 10 commit)
+# Scan the current repository (last 10 commits)
 python3 scan.py
 
-# Scansiona gli ultimi 20 commit e salva il report
+# Scan the last 20 commits and save the report
 python3 scan.py --repo . --n 20 --out report.json
 
-# Esempio completo
+# Complete example
 python3 scan.py --repo /path/to/repo --n 5 --out findings.json
 ```
 
-### Parametri
+### Parameters
 
-- `--repo`: Path al repository Git (default: '.')
-- `--n`: Numero di commit da analizzare (default: 10)
-- `--out`: File di output per il report JSON (default: 'report.json')
+- `--repo`: Path to the Git repository (default: '.')
+- `--n`: Number of commits to analyze (default: 10)
+- `--out`: Output file for the JSON report (default: 'report.json')
 
-## Struttura del Report
+## Report Structure
 
-Il report JSON generato contiene:
+The generated JSON report contains:
 ```json
 {
   "repository": "path/to/repo",
@@ -51,9 +51,9 @@ Il report JSON generato contiene:
   "findings": [
     {
       "commit_hash": "abc123...",
-      "author": "Nome Autore",
+      "author": "Author Name",
       "date": "2025-09-25 10:00:00",
-      "message": "Messaggio del commit",
+      "message": "Commit message",
       "finding_type": "suspicious_keyword_in_message",
       "pattern": "password",
       "confidence": 0.3
@@ -62,13 +62,13 @@ Il report JSON generato contiene:
 }
 ```
 
-## Note per lo Sviluppo Futuro
+## Notes for Future Development
 
-Questo è un progetto in fase iniziale. Le prossime implementazioni potrebbero includere:
-- Analisi del contenuto dei file modificati (diff)
-- Integrazione con modelli LLM per analisi più sofisticate
-- Filtri euristici (regex, entropia) per ridurre i falsi positivi
-- Supporto per diversi tipi di segreti (API keys, certificati, ecc.)
+This is an early-stage project. Future implementations may include:
+- Analysis of modified file content (diffs)
+- Integration with LLM models for more sophisticated analysis
+- Heuristic filters (regex, entropy) to reduce false positives
+- Support for different types of secrets (API keys, certificates, etc.)
 
 ## License
 
