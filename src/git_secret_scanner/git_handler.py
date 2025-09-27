@@ -18,3 +18,35 @@ class GitHandler:
             diff = commit.diff(commit.parents[0])
             return diff
         return None
+    
+    def get_commit_changes(self, commit):
+        changes = []
+        
+        if not commit.parents:
+            parent = None
+            diffs = commit.diff(None)
+        else:
+            parent = commit.parents[0]
+            diffs = commit.diff(parent)
+        
+        for diff_item in diffs:
+            change = {
+                'file_path': diff_item.a_path or diff_item.b_path,
+                'change_type': diff_item.change_type,
+                'added_lines': [],
+                'removed_lines': []
+            }
+            
+            if diff_item.diff:
+                diff_text = diff_item.diff.decode('utf-8', errors='ignore')
+                lines = diff_text.split('\n')
+                
+                for line in lines:
+                    if line.startswith('+') and not line.startswith('+++'):
+                        change['added_lines'].append(line[1:])
+                    elif line.startswith('-') and not line.startswith('---'):
+                        change['removed_lines'].append(line[1:])
+            
+            changes.append(change)
+        
+        return changes

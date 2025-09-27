@@ -9,6 +9,7 @@ This project provides a CLI command that analyzes Git repository commits to dete
 Currently implements:
 - Reading the last N commits from a Git repository
 - Searching for suspicious keywords in commit messages
+- Scanning file diffs for sensitive data in added lines
 - Generating JSON reports with the results
 
 ## Installation
@@ -57,6 +58,17 @@ The generated JSON report contains:
       "finding_type": "suspicious_keyword_in_message",
       "pattern": "password",
       "confidence": 0.3
+    },
+    {
+      "commit_hash": "def456...",
+      "author": "Author Name",
+      "date": "2025-09-25 10:00:00",
+      "file_path": "config/settings.py",
+      "line_number": 42,
+      "snippet": "api_key = 'sk-1234567890abcdef'",
+      "finding_type": "suspicious_keyword_in_diff",
+      "pattern": "api_key",
+      "confidence": 0.5
     }
   ]
 }
@@ -65,7 +77,6 @@ The generated JSON report contains:
 ## Notes for Future Development
 
 This is an early-stage project. Future implementations may include:
-- Analysis of modified file content (diffs)
 - Integration with LLM models for more sophisticated analysis
 - Heuristic filters (regex, entropy) to reduce false positives
 - Support for different types of secrets (API keys, certificates, etc.)

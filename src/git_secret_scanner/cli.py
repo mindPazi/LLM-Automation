@@ -18,12 +18,10 @@ def main():
         commits = handler.get_recent_commits(args.n)
         
         findings = []
+        suspicious_patterns = ['password', 'secret', 'api_key', 'token', 'private_key', 'access_key', 'auth', 'credential']
         
         for commit in commits:
             print(f"Checking commit {commit.hexsha[:8]}...")
-            
-            
-            suspicious_patterns = ['password', 'secret', 'api_key', 'token', 'private_key']
             
             for pattern in suspicious_patterns:
                 if pattern.lower() in commit.message.lower():
@@ -37,7 +35,27 @@ def main():
                         'confidence': 0.3
                     }
                     findings.append(finding)
-        
+            
+            changes = handler.get_commit_changes(commit)
+            
+            for change in changes:
+                file_path = change['file_path']
+                
+                for line_num, line in enumerate(change['added_lines'], 1):
+                    for pattern in suspicious_patterns:
+                        if pattern.lower() in line.lower():
+                            finding = {
+                                'commit_hash': commit.hexsha,
+                                'author': str(commit.author),
+                                'date': str(commit.committed_datetime),
+                                'file_path': file_path,
+                                'line_number': line_num,
+                                'snippet': line[:200],
+                                'finding_type': 'suspicious_keyword_in_diff',
+                                'pattern': pattern,
+                                'confidence': 0.5
+                            }
+                            findings.append(finding)
         
         with open(args.out, 'w') as f:
             json.dump({
