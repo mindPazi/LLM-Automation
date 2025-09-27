@@ -24,10 +24,10 @@ class GitHandler:
         
         if not commit.parents:
             parent = None
-            diffs = commit.diff(None)
+            diffs = commit.diff(None, create_patch=True)
         else:
             parent = commit.parents[0]
-            diffs = commit.diff(parent)
+            diffs = commit.diff(parent, create_patch=True)
         
         for diff_item in diffs:
             change = {
