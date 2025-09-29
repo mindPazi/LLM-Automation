@@ -2,6 +2,9 @@ import json
 from typing import List, Dict, Any, Optional, Set
 import git
 from src.git_secret_scanner.heuristics import HeuristicFilter
+from src.git_secret_scanner.logger_config import get_logger
+
+logger = get_logger()
 
 class ReportGenerator:
     
@@ -145,19 +148,19 @@ class ReportGenerator:
         heuristic_fallback_count = sum(1 for f in findings if 'heuristic_fallback' in f.get('finding_type', ''))
         llm_validated_count = sum(1 for f in findings if 'llm_validated' in f.get('finding_type', ''))
         
-        print(f"\nAnalysis Summary:")
+        logger.info("Analysis Summary:")
         if scan_mode == 'llm-only':
-            print(f"  - LLM detected: {llm_secrets_count} secret(s)")
+            logger.info(f"  - LLM detected: {llm_secrets_count} secret(s)")
         elif scan_mode == 'heuristic-only':
-            print(f"  - Heuristic detected: {heuristic_secrets_count} secret(s)")
+            logger.info(f"  - Heuristic detected: {heuristic_secrets_count} secret(s)")
         elif scan_mode == 'llm-fallback':
-            print(f"  - LLM detected: {llm_secrets_count} secret(s)")
-            print(f"  - Heuristic fallback detected: {heuristic_fallback_count} additional secret(s)")
+            logger.info(f"  - LLM detected: {llm_secrets_count} secret(s)")
+            logger.info(f"  - Heuristic fallback detected: {heuristic_fallback_count} additional secret(s)")
         elif scan_mode == 'llm-validated':
-            print(f"  - LLM validated secrets: {llm_validated_count} secret(s)")
+            logger.info(f"  - LLM validated secrets: {llm_validated_count} secret(s)")
     
     def print_current_summary(self, scan_mode: str) -> None:
         self.print_summary(self.findings, scan_mode)
         
         if scan_mode == 'llm-validated' and self.filtered_false_positives:
-            print(f"  - False positives removed: {len(self.filtered_false_positives)}")
+            logger.info(f"  - False positives removed: {len(self.filtered_false_positives)}")
