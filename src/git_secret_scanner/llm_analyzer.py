@@ -1,50 +1,112 @@
-from transformers import AutoTokenizer, AutoModelForCausalLM
+import os
+import re
+from openai import OpenAI
 
 class LLMAnalyzer:
     
-    def __init__(self, model_name="llama"):
+    def __init__(self, model_name="gpt-5-mini", api_key=None):
         self.model_name = model_name
-        self.model = None
-        self.tokenizer = None
+        self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
+        self.client = None
+        
+        if not self.api_key:
+            raise ValueError("API key not provided. Set OPENAI_API_KEY environment variable or pass api_key parameter.")
     
     def load_model(self):
-        self.tokenizer = AutoTokenizer.from_pretrained(self.model_name)
-        self.model = AutoModelForCausalLM.from_pretrained(self.model_name)
+        self.client = OpenAI(api_key=self.api_key)
+    
+    def extract_findings(self, llm_response):
+        findings = []
+        
+        if not llm_response or "Error" in llm_response:
+            return findings
+        
+        
+        
+        patterns = [
+            r'([A-Z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',  
+            r'([a-z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',  
+            r'([A-Za-z_]+[Kk]ey|[Tt]oken|[Pp]assword|[Ss]ecret|[Cc]redential)\s*:\s*["\']?([^"\'\n]+)["\']?'  
+        ]
+        
+        for pattern in patterns:
+            matches = re.findall(pattern, llm_response)
+            for match in matches:
+                key = match[0]
+                value = match[1] if len(match) > 1 else match[0]
+                
+                
+                if len(value) > 5 and not value.startswith("***") and not value == "hidden":
+                    findings.append({
+                        'key': key,
+                        'value': value[:100],  
+                        'type': 'llm_detected_secret'
+                    })
+        
+        
+        if re.search(r'no\s+(secrets?|issues?|problems?)\s+found', llm_response, re.IGNORECASE):
+            return []
+        
+        return findings
     
     def analyze_diff(self, diff_content):
-        if not self.model or not self.tokenizer:
-            raise ValueError("Model or tokenizer not loaded. Call load_model() first.")
+        if not self.client:
+            raise ValueError("OpenAI client not initialized. Call load_model() first.")
         
-        prompt = f"Analyze the following git diff for potential security issues or exposed secrets:\n\n{diff_content}"
+        prompt = f"""Find secrets in this code:
+{diff_content}
+
+Return format:
+KEY : VALUE
+
+Example:
+database_password : mySecretPassword123
+api_key : sk-1234567890abcdef"""
         
-        inputs = self.tokenizer(prompt, return_tensors="pt", max_length=512, truncation=True)
-        
-        outputs = self.model.generate(
-            inputs.input_ids,
-            max_length=256,
-            temperature=0.7,
-            pad_token_id=self.tokenizer.eos_token_id
-        )
-        
-        result = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        return result
+        try:
+            print(f"    [DEBUG] Sending to {self.model_name}...")
+            print(f"    [DEBUG] Diff content length: {len(diff_content)} chars")
+            print(f"    [DEBUG] First 200 chars of diff: {diff_content[:200]}")
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {"role": "system", "content": "Find secrets. Return KEY : VALUE format only."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_completion_tokens=16384
+            )
+            
+            result = response.choices[0].message.content
+            print(f"    [DEBUG] Raw LLM response: '{result}'")
+            return result if result else "No response from LLM"
+            
+        except Exception as e:
+            print(f"    [DEBUG] Error: {str(e)}")
+            return f"Error analyzing diff: {str(e)}"
     
     def analyze_commit_message(self, message):
-        if not self.model or not self.tokenizer:
-            raise ValueError("Model or tokenizer not loaded. Call load_model() first.")
+        if not self.client:
+            raise ValueError("OpenAI client not initialized. Call load_model() first.")
         
-        prompt = f"Analyze the following git commit message for potential security issues or exposed secrets:\n\n{message}"
+        prompt = f"""Analyze the following git commit message for exposed secrets.
+Return ONLY found secrets in the format KEY : VALUE, one per line.
+If no secrets are found, respond with "No secrets found".
+
+Commit message:
+{message}"""
         
-        inputs = self.tokenizer(prompt, return_tensors="pt", max_length=512, truncation=True)
-        
-        outputs = self.model.generate(
-            inputs.input_ids,
-            max_length=256,
-            temperature=0.7,
-            pad_token_id=self.tokenizer.eos_token_id
-        )
-        
-        result = self.tokenizer.decode(outputs[0], skip_special_tokens=True)
-        
-        return result
+        try:
+            response = self.client.chat.completions.create(
+                model=self.model_name,
+                messages=[
+                    {"role": "system", "content": "You are a security expert. Extract and return ONLY actual secrets in KEY : VALUE format."},
+                    {"role": "user", "content": prompt}
+                ],
+                max_completion_tokens=256
+            )
+            
+            result = response.choices[0].message.content
+            return result
+            
+        except Exception as e:
+            return f"Error analyzing commit message: {str(e)}"
