@@ -21,13 +21,13 @@ class LLMAnalyzer:
         if not llm_response or "Error" in llm_response:
             return findings
         
-        
-        
         patterns = [
-            r'([A-Z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',  
-            r'([a-z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',  
-            r'([A-Za-z_]+[Kk]ey|[Tt]oken|[Pp]assword|[Ss]ecret|[Cc]redential)\s*:\s*["\']?([^"\'\n]+)["\']?'  
+            r'([A-Z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',
+            r'([a-z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',
+            r'([A-Za-z_]+[Kk]ey|[Tt]oken|[Pp]assword|[Ss]ecret|[Cc]redential)\s*:\s*["\']?([^"\'\n]+)["\']?'
         ]
+        
+        seen_findings = set()
         
         for pattern in patterns:
             matches = re.findall(pattern, llm_response)
@@ -35,14 +35,16 @@ class LLMAnalyzer:
                 key = match[0]
                 value = match[1] if len(match) > 1 else match[0]
                 
-                
                 if len(value) > 5 and not value.startswith("***") and not value == "hidden":
-                    findings.append({
-                        'key': key,
-                        'value': value[:100],  
-                        'type': 'llm_detected_secret'
-                    })
-        
+                    unique_id = f"{key.lower()}:{value}"
+                    
+                    if unique_id not in seen_findings:
+                        seen_findings.add(unique_id)
+                        findings.append({
+                            'key': key,
+                            'value': value[:100],
+                            'type': 'llm_detected_secret'
+                        })
         
         if re.search(r'no\s+(secrets?|issues?|problems?)\s+found', llm_response, re.IGNORECASE):
             return []
