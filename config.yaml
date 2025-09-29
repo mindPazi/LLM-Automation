@@ -48,19 +48,19 @@ heuristics:
 patterns:
   # Regex patterns for secret detection
   secret_patterns:
-    - pattern: '["\']?([Aa][Pp][Ii][_-]?[Kk][Ee][Yy])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Aa][Pp][Ii][_-]?[Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "api_key"
-    - pattern: '["\']?([Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "password"
-    - pattern: '["\']?([Tt][Oo][Kk][Ee][Nn])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Tt][Oo][Kk][Ee][Nn])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "token"
-    - pattern: '["\']?([Ss][Ee][Cc][Rr][Ee][Tt])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Ss][Ee][Cc][Rr][Ee][Tt])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "secret"
-    - pattern: '["\']?([Aa][Cc][Cc][Ee][Ss][Ss][_-]?[Kk][Ee][Yy])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Aa][Cc][Cc][Ee][Ss][Ss][_-]?[Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "access_key"
-    - pattern: '["\']?([Pp][Rr][Ii][Vv][Aa][Tt][Ee][_-]?[Kk][Ee][Yy])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Pp][Rr][Ii][Vv][Aa][Tt][Ee][_-]?[Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "private_key"
-    - pattern: '["\']?([Aa][Uu][Tt][Hh])[_-]?([Tt][Oo][Kk][Ee][Nn])["\']?\s*[:=]\s*["\']([^"\']+)["\']'
+    - pattern: "[\"']?([Aa][Uu][Tt][Hh])[_-]?([Tt][Oo][Kk][Ee][Nn])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "auth_token"
   
   # Known secret patterns for validation
@@ -81,6 +81,67 @@ validation:
   
   # Minimum keyword count for comma-separated false positives
   min_keyword_count_for_fp: 3
+  
+  # Keywords to check in comma-separated values
+  comma_keywords:
+    - "password"
+    - "secret"
+    - "token"
+    - "key"
+    - "api"
+    - "auth"
+    - "credential"
+    - "private"
+  
+  # Minimum comma count for comma-separated check
+  min_comma_count: 2
+  
+  # Internal patterns to check in values
+  internal_patterns:
+    - "_secret_"
+    - "_test_"
+    - "_demo_"
+    - "_example_"
+    - "_sample_"
+  
+  # Additional internal patterns 
+  additional_patterns:
+    - "super_"
+  
+  # Known prefixes for valid secrets
+  known_prefixes:
+    - "sk-"
+    - "ghp_"
+  
+  # Token suffixes to check
+  token_suffixes:
+    - "_secret"
+    - "_key"
+    - "_token"
+  
+  # PEM markers prefixes
+  pem_prefixes:
+    - "-----BEGIN"
+    - "-----END"
+  
+  # Thresholds for validation
+  entropy_threshold_no_keyword: 3.5
+  
+  # Confidence return values
+  confidence_return_comma: 0.2
+  confidence_return_spaces: 0.3
+  confidence_return_min: 0.4
+  
+  # Length thresholds
+  min_length_short: 8
+  max_length_long: 100
+  
+  # Space thresholds
+  max_space_count: 3
+  
+  # Entropy thresholds for confidence
+  entropy_very_low: 2.0
+  entropy_high: 4.0
   
   # Test values to ignore
   test_values:

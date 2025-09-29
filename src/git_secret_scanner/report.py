@@ -14,11 +14,16 @@ class ReportGenerator:
         self.seen_secrets = set()
         self.seen_false_positives = set()
         self.heuristic_filter = HeuristicFilter()
+        self.duplicates_count = 0
+        self.llm_duplicates_count = 0
+        self.heuristic_duplicates_count = 0
     
     def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
         unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
         
         if unique_id in self.seen_secrets:
+            self.llm_duplicates_count += 1
+            self.duplicates_count += 1
             return None
             
         self.seen_secrets.add(unique_id)
@@ -30,6 +35,8 @@ class ReportGenerator:
         unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
         
         if unique_id in self.seen_secrets:
+            self.llm_duplicates_count += 1
+            self.duplicates_count += 1
             return None
             
         self.seen_secrets.add(unique_id)
@@ -51,7 +58,15 @@ class ReportGenerator:
         self.filtered_false_positives.append(false_positive)
         return false_positive
     
-    def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
+    def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Optional[Dict[str, Any]]:
+        unique_id = f"{commit.hexsha}:{file_path}:{heuristic_finding['secret_value']}"
+        
+        if unique_id in self.seen_secrets:
+            self.heuristic_duplicates_count += 1
+            self.duplicates_count += 1
+            return None
+            
+        self.seen_secrets.add(unique_id)
         finding = self.create_heuristic_finding(commit, file_path, heuristic_finding, finding_type)
         self.findings.append(finding)
         return finding
@@ -150,14 +165,22 @@ class ReportGenerator:
         
         logger.info("Analysis Summary:")
         if scan_mode == 'llm-only':
-            logger.info(f"  - LLM detected: {llm_secrets_count} secret(s)")
+            logger.info(f"  - LLM detected: {llm_secrets_count} unique secret(s)")
+            if self.llm_duplicates_count > 0:
+                logger.info(f"  - Duplicates filtered: {self.llm_duplicates_count}")
         elif scan_mode == 'heuristic-only':
-            logger.info(f"  - Heuristic detected: {heuristic_secrets_count} secret(s)")
+            logger.info(f"  - Heuristic detected: {heuristic_secrets_count} unique secret(s)")
+            if self.heuristic_duplicates_count > 0:
+                logger.info(f"  - Duplicates filtered: {self.heuristic_duplicates_count}")
         elif scan_mode == 'llm-fallback':
-            logger.info(f"  - LLM detected: {llm_secrets_count} secret(s)")
+            logger.info(f"  - LLM detected: {llm_secrets_count} unique secret(s)")
             logger.info(f"  - Heuristic fallback detected: {heuristic_fallback_count} additional secret(s)")
+            if self.duplicates_count > 0:
+                logger.info(f"  - Total duplicates filtered: {self.duplicates_count}")
         elif scan_mode == 'llm-validated':
-            logger.info(f"  - LLM validated secrets: {llm_validated_count} secret(s)")
+            logger.info(f"  - LLM validated secrets: {llm_validated_count} unique secret(s)")
+            if self.llm_duplicates_count > 0:
+                logger.info(f"  - Duplicates filtered: {self.llm_duplicates_count}")
     
     def print_current_summary(self, scan_mode: str) -> None:
         self.print_summary(self.findings, scan_mode)
