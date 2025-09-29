@@ -64,9 +64,6 @@ database_password : mySecretPassword123
 api_key : sk-1234567890abcdef"""
         
         try:
-            print(f"    [DEBUG] Sending to {self.model_name}...")
-            print(f"    [DEBUG] Diff content length: {len(diff_content)} chars")
-            print(f"    [DEBUG] First 200 chars of diff: {diff_content[:200]}")
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[
@@ -77,11 +74,9 @@ api_key : sk-1234567890abcdef"""
             )
             
             result = response.choices[0].message.content
-            print(f"    [DEBUG] Raw LLM response: '{result}'")
             return result if result else "No response from LLM"
             
         except Exception as e:
-            print(f"    [DEBUG] Error: {str(e)}")
             return f"Error analyzing diff: {str(e)}"
     
     def analyze_commit_message(self, message):

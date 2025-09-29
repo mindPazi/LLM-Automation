@@ -1,10 +1,10 @@
 import argparse
-import json
 import os
 from dotenv import load_dotenv
 from src.git_secret_scanner.git_handler import GitHandler
 from src.git_secret_scanner.llm_analyzer import LLMAnalyzer
 from src.git_secret_scanner.heuristics import HeuristicFilter
+from src.git_secret_scanner.report import ReportGenerator
 
 load_dotenv()
 
@@ -14,9 +14,9 @@ def main():
     parser.add_argument('--from', dest='from_commit', type=str, help='Start commit (hash or reference)')
     parser.add_argument('--to', dest='to_commit', type=str, help='End commit (hash or reference, optional)')
     parser.add_argument('--out', type=str, default='report.json', help='Output file')
-    parser.add_argument('--use-llm', action='store_true', help='Use gpt-5-nano model for analysis')
-    parser.add_argument('--model', type=str, default='gpt-5-nano', help='Model name (default: gpt-5-nano)')
-    parser.add_argument('--llm-only', action='store_true', help='Use only LLM without heuristic fallback')
+    parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-fallback'], 
+                       default='llm-fallback', help='Scan mode: llm-only, heuristic-only, or llm-fallback')
+    parser.add_argument('--model', type=str, default='gpt-5-mini', help='Model name (default: gpt-5-mini)')
     
     args = parser.parse_args()
     
@@ -26,13 +26,14 @@ def main():
     
     try:
         print(f"Scanning repository: {args.repo}")
+        print(f"Mode: {args.mode}")
         if args.to_commit:
             print(f"Analyzing commits from {args.from_commit} to {args.to_commit}...")
         else:
             print(f"Analyzing commit {args.from_commit}...")
         
         llm_analyzer = None
-        if args.use_llm:
+        if args.mode in ['llm-only', 'llm-fallback']:
             print(f"Initializing {args.model} model...")
             llm_analyzer = LLMAnalyzer(model_name=args.model)
             llm_analyzer.load_model()
@@ -42,10 +43,9 @@ def main():
         commits = handler.get_commits_range(args.from_commit, args.to_commit)
         
         heuristic_filter = HeuristicFilter()
+        report_generator = ReportGenerator()
         
         findings = []
-        llm_secrets_count = 0
-        heuristic_only_secrets_count = 0
         
         for commit in commits:
             print(f"Checking commit {commit.hexsha[:8]}...")
@@ -64,80 +64,64 @@ def main():
                 if file_path.lower() in ['readme.md', 'readme.txt', 'readme.rst', 'readme']:
                     continue
                 
-                llm_findings_found = False
-                llm_secrets_in_file = 0
+                llm_findings = []
+                heuristic_findings = []
                 
-                if llm_analyzer and len(change['added_lines']) > 0:
+                if args.mode == 'llm-only' and llm_analyzer and len(change['added_lines']) > 0:
                     diff_content = '\n'.join(change['added_lines'])
                     llm_result = llm_analyzer.analyze_diff(diff_content)
-                    
-                    if args.llm_only:
-                        print(f"  └─ LLM response for {file_path}:")
-                        print(f"      {llm_result}")
                     
                     llm_secrets = llm_analyzer.extract_findings(llm_result)
                     
                     if llm_secrets:
-                        llm_secrets_in_file = len(llm_secrets)
-                        llm_secrets_count += llm_secrets_in_file
-                        print(f"  └─ LLM found {llm_secrets_in_file} secret(s) in {file_path}")
+                        print(f"  └─ LLM found {len(llm_secrets)} secret(s) in {file_path}")
                     
                     for secret in llm_secrets:
-                        llm_findings_found = True
-                        finding = {
-                            'commit_hash': commit.hexsha,
-                            'author': str(commit.author),
-                            'date': str(commit.committed_datetime),
-                            'file_path': file_path,
-                            'finding_type': 'llm_detected_secret',
-                            'model': args.model,
-                            'secret_key': secret['key'],
-                            'secret_value': secret['value'],
-                            'confidence': 0.9
-                        }
+                        finding = report_generator.create_llm_finding(commit, file_path, secret, args.model)
                         findings.append(finding)
                 
-                heuristic_secrets_in_file = 0
-                if not llm_findings_found and not args.llm_only:
-                    heuristic_findings = heuristic_filter.apply_regex_filters(change['added_lines'])
+                elif args.mode == 'heuristic-only':
+                    heuristic_results = heuristic_filter.apply_regex_filters(change['added_lines'])
                     
-                    for heuristic_finding in heuristic_findings:
-                        finding = {
-                            'commit_hash': commit.hexsha,
-                            'author': str(commit.author),
-                            'date': str(commit.committed_datetime),
-                            'file_path': file_path,
-                            'line_number': heuristic_finding['line_number'],
-                            'snippet': heuristic_finding['line'],
-                            'finding_type': 'heuristic_detected_secret',
-                            'pattern': heuristic_finding['pattern_type'],
-                            'secret_key': heuristic_finding['secret_key'],
-                            'secret_value': heuristic_finding['secret_value'],
-                            'entropy': heuristic_finding['entropy'],
-                            'confidence': 0.7
-                        }
+                    if heuristic_results:
+                        print(f"  └─ Heuristic found {len(heuristic_results)} secret(s) in {file_path}")
+                    
+                    for heuristic_finding in heuristic_results:
+                        finding = report_generator.create_heuristic_finding(commit, file_path, heuristic_finding)
                         findings.append(finding)
-                        heuristic_secrets_in_file += 1
                 
-                if heuristic_secrets_in_file > 0 and not llm_findings_found:
-                    heuristic_only_secrets_count += heuristic_secrets_in_file
+                elif args.mode == 'llm-fallback' and len(change['added_lines']) > 0:
+                    llm_found_secrets = False
+                    
                     if llm_analyzer:
-                        print(f"  └─ Heuristic found {heuristic_secrets_in_file} secret(s) missed by LLM in {file_path}")
+                        diff_content = '\n'.join(change['added_lines'])
+                        llm_result = llm_analyzer.analyze_diff(diff_content)
+                        llm_secrets = llm_analyzer.extract_findings(llm_result)
+                        
+                        if llm_secrets:
+                            llm_found_secrets = True
+                            print(f"  └─ LLM found {len(llm_secrets)} secret(s) in {file_path}")
+                            
+                            for secret in llm_secrets:
+                                finding = report_generator.create_llm_finding(commit, file_path, secret, args.model)
+                                findings.append(finding)
+                    
+                    if not llm_found_secrets:
+                        heuristic_results = heuristic_filter.apply_regex_filters(change['added_lines'])
+                        
+                        if heuristic_results:
+                            print(f"  └─ Heuristic found {len(heuristic_results)} secret(s) missed by LLM in {file_path}")
+                            
+                            for heuristic_finding in heuristic_results:
+                                finding = report_generator.create_heuristic_finding(commit, file_path, heuristic_finding, 'heuristic_fallback_secret')
+                                findings.append(finding)
         
-        with open(args.out, 'w') as f:
-            json.dump({
-                'repository': args.repo,
-                'commits_scanned': len(commits),
-                'findings': findings
-            }, f, indent=2)
+        report_generator.save_report(args.repo, args.mode, len(commits), findings, args.out)
         
         print(f"\nReport saved to: {args.out}")
         print(f"Found {len(findings)} potential issues")
         
-        if llm_analyzer:
-            print(f"\n📊 Analysis Summary:")
-            print(f"  - LLM detected: {llm_secrets_count} secret(s)")
-            print(f"  - Heuristic fallback detected: {heuristic_only_secrets_count} additional secret(s)")
+        report_generator.print_summary(findings, args.mode)
         
     except Exception as e:
         print(f"Error: {e}")
