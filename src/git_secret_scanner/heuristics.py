@@ -1,10 +1,11 @@
 import re
 import math
+from typing import List, Dict, Any, Tuple, Optional
 from collections import Counter
 
 class HeuristicFilter:
     
-    def __init__(self):
+    def __init__(self) -> None:
         self.entropy_threshold = 4.5
         self.secret_patterns = [
             (r'["\']?([Aa][Pp][Ii][_-]?[Kk][Ee][Yy])["\']?\s*[:=]\s*["\']([^"\']+)["\']', 'api_key'),
@@ -24,7 +25,7 @@ class HeuristicFilter:
             'slack_token': r'^xox[baprs]-[0-9]{10,12}-[0-9]{10,12}-[a-zA-Z0-9]{24}$'
         }
     
-    def apply_filters(self, potential_issues):
+    def apply_filters(self, potential_issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         filtered_issues = []
         
         for issue in potential_issues:
@@ -40,7 +41,7 @@ class HeuristicFilter:
         
         return filtered_issues
     
-    def apply_regex_filters(self, content):
+    def apply_regex_filters(self, content: Any) -> List[Dict[str, Any]]:
         findings = []
         
         lines = content.split('\n') if isinstance(content, str) else content
@@ -72,7 +73,7 @@ class HeuristicFilter:
         
         return findings
     
-    def calculate_entropy(self, string):
+    def calculate_entropy(self, string: str) -> float:
         if not string:
             return 0.0
         
@@ -89,7 +90,7 @@ class HeuristicFilter:
         
         return entropy
     
-    def _is_valid_secret(self, value):
+    def _is_valid_secret(self, value: str) -> bool:
         if not value or len(value) < 6:
             return False
         
@@ -122,7 +123,7 @@ class HeuristicFilter:
         
         return True
     
-    def _is_placeholder(self, value):
+    def _is_placeholder(self, value: str) -> bool:
         placeholders = [
             'xxx', '***', '...', '---',
             'your_', 'my_', 'the_',
@@ -137,7 +138,7 @@ class HeuristicFilter:
         
         return False
     
-    def validate_llm_finding(self, key, value):
+    def validate_llm_finding(self, key: str, value: str) -> bool:
         if not value or not key:
             return False
         
@@ -160,7 +161,7 @@ class HeuristicFilter:
         
         return True
     
-    def adjust_confidence_with_heuristics(self, initial_confidence, key, value):
+    def adjust_confidence_with_heuristics(self, initial_confidence: float, key: str, value: str) -> Tuple[float, bool]:
         confidence = initial_confidence
         threshold = 0.5
         
@@ -273,7 +274,7 @@ class HeuristicFilter:
         
         return confidence, should_filter
     
-    def _validate_secret_value(self, value, min_entropy=2.0): 
+    def _validate_secret_value(self, value: str, min_entropy: float = 2.0) -> Dict[str, Any]: 
         result = {
             'is_valid': False,
             'entropy': 0.0,
@@ -298,7 +299,7 @@ class HeuristicFilter:
         result['is_valid'] = True
         return result
     
-    def calculate_confidence(self, secret_key, secret_value, secret_type=None):
+    def calculate_confidence(self, secret_key: str, secret_value: str, secret_type: Optional[str] = None) -> float:
         if ',' in secret_value and secret_value.count(',') >= 2:
             return 0.2
         
@@ -320,7 +321,7 @@ class HeuristicFilter:
         
         return min(1.0, max(0.4, total_score))
     
-    def _calculate_entropy_score(self, value):
+    def _calculate_entropy_score(self, value: str) -> float:
         entropy = self.calculate_entropy(value)
         
         if entropy > 4.5:
@@ -332,7 +333,7 @@ class HeuristicFilter:
         else:
             return 0.05
     
-    def _calculate_length_score(self, value):
+    def _calculate_length_score(self, value: str) -> float:
         length = len(value)
         
         if 20 <= length <= 64:
@@ -346,7 +347,7 @@ class HeuristicFilter:
         else:
             return 0.05
     
-    def _calculate_type_score(self, key, value, secret_type=None):
+    def _calculate_type_score(self, key: str, value: str, secret_type: Optional[str] = None) -> float:
         
         for pattern_name, pattern in self.known_patterns.items():
             if re.match(pattern, value):
@@ -367,7 +368,7 @@ class HeuristicFilter:
         else:
             return 0.10
     
-    def _calculate_complexity_score(self, value):
+    def _calculate_complexity_score(self, value: str) -> float:
         has_upper = any(c.isupper() for c in value)
         has_lower = any(c.islower() for c in value)
         has_digit = any(c.isdigit() for c in value)

@@ -1,10 +1,11 @@
 import os
 import re
+from typing import Optional, List, Dict, Any
 from openai import OpenAI
 
 class LLMAnalyzer:
     
-    def __init__(self, model_name="gpt-5-mini", api_key=None):
+    def __init__(self, model_name: str = "gpt-5-mini", api_key: Optional[str] = None) -> None:
         self.model_name = model_name
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
         self.client = None
@@ -12,10 +13,10 @@ class LLMAnalyzer:
         if not self.api_key:
             raise ValueError("API key not provided. Set OPENAI_API_KEY environment variable or pass api_key parameter.")
     
-    def load_model(self):
+    def load_model(self) -> None:
         self.client = OpenAI(api_key=self.api_key)
     
-    def extract_findings(self, llm_response):
+    def extract_findings(self, llm_response: str) -> List[Dict[str, Any]]:
         findings = []
         
         if not llm_response or "Error" in llm_response:
@@ -51,7 +52,7 @@ class LLMAnalyzer:
         
         return findings
     
-    def analyze_diff(self, diff_content):
+    def analyze_diff(self, diff_content: str) -> str:
         if not self.client:
             raise ValueError("OpenAI client not initialized. Call load_model() first.")
         
@@ -81,7 +82,7 @@ api_key : sk-1234567890abcdef"""
         except Exception as e:
             return f"Error analyzing diff: {str(e)}"
     
-    def analyze_commit_message(self, message):
+    def analyze_commit_message(self, message: str) -> str:
         if not self.client:
             raise ValueError("OpenAI client not initialized. Call load_model() first.")
         

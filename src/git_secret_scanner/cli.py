@@ -1,5 +1,7 @@
 import argparse
 import os
+from typing import List, Dict, Any, Optional
+import git
 from dotenv import load_dotenv
 from src.git_secret_scanner.git_handler import GitHandler
 from src.git_secret_scanner.llm_analyzer import LLMAnalyzer
@@ -8,7 +10,7 @@ from src.git_secret_scanner.report import ReportGenerator
 
 load_dotenv()
 
-def main():
+def main() -> int:
     parser = argparse.ArgumentParser(description='Scan Git repository for secrets')
     parser.add_argument('--repo', type=str, default='.', help='Path to Git repository')
     parser.add_argument('--from', dest='from_commit', type=str, help='Start commit (hash or reference)')
@@ -107,12 +109,13 @@ def main():
     
     return 0
 
-def analyze_with_llm(llm_analyzer, added_lines):
+def analyze_with_llm(llm_analyzer: LLMAnalyzer, added_lines: List[str]) -> List[Dict[str, Any]]:
     diff_content = '\n'.join(added_lines)
     llm_result = llm_analyzer.analyze_diff(diff_content)
     return llm_analyzer.extract_findings(llm_result)
 
-def process_llm_only(llm_analyzer, added_lines, commit, file_path, report_generator, model_name):
+def process_llm_only(llm_analyzer: LLMAnalyzer, added_lines: List[str], commit: git.Commit, 
+                     file_path: str, report_generator: ReportGenerator, model_name: str) -> None:
     llm_secrets = analyze_with_llm(llm_analyzer, added_lines)
     
     if llm_secrets:
@@ -121,7 +124,8 @@ def process_llm_only(llm_analyzer, added_lines, commit, file_path, report_genera
     for secret in llm_secrets:
         report_generator.add_llm_finding(commit, file_path, secret, model_name)
 
-def process_heuristic_only(heuristic_filter, added_lines, commit, file_path, report_generator):
+def process_heuristic_only(heuristic_filter: HeuristicFilter, added_lines: List[str], 
+                          commit: git.Commit, file_path: str, report_generator: ReportGenerator) -> None:
     heuristic_results = heuristic_filter.apply_regex_filters(added_lines)
     
     if heuristic_results:
@@ -130,8 +134,9 @@ def process_heuristic_only(heuristic_filter, added_lines, commit, file_path, rep
     for heuristic_finding in heuristic_results:
         report_generator.add_heuristic_finding(commit, file_path, heuristic_finding)
 
-def process_llm_validated(llm_analyzer, heuristic_filter, added_lines, commit, file_path, 
-                         report_generator, model_name):
+def process_llm_validated(llm_analyzer: LLMAnalyzer, heuristic_filter: HeuristicFilter, 
+                         added_lines: List[str], commit: git.Commit, file_path: str, 
+                         report_generator: ReportGenerator, model_name: str) -> None:
     llm_secrets = analyze_with_llm(llm_analyzer, added_lines)
     
     if not llm_secrets:
@@ -186,8 +191,9 @@ def process_llm_validated(llm_analyzer, heuristic_filter, added_lines, commit, f
     elif len(unique_secrets) > 0:
         print(f"  └─ LLM found {len(unique_secrets)} secret(s) → all filtered as low confidence in {file_path}")
 
-def process_llm_fallback(llm_analyzer, heuristic_filter, added_lines, commit, file_path, 
-                        report_generator, model_name):
+def process_llm_fallback(llm_analyzer: Optional[LLMAnalyzer], heuristic_filter: HeuristicFilter, 
+                        added_lines: List[str], commit: git.Commit, file_path: str, 
+                        report_generator: ReportGenerator, model_name: str) -> None:
     llm_found_secrets = False
     
     if llm_analyzer:

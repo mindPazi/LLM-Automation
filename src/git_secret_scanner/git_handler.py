@@ -1,18 +1,19 @@
 import git
+from typing import List, Optional, Dict, Any
 
 class GitHandler:
     
-    def __init__(self, repo_path):
+    def __init__(self, repo_path: str) -> None:
         self.repo_path = repo_path
         self.repo = git.Repo(repo_path)
     
-    def get_recent_commits(self, n=10):
+    def get_recent_commits(self, n: int = 10) -> List[git.Commit]:
         commits = []
         for commit in self.repo.iter_commits(max_count=n):
             commits.append(commit)
         return commits
     
-    def get_commits_range(self, start_commit, end_commit=None):
+    def get_commits_range(self, start_commit: str, end_commit: Optional[str] = None) -> List[git.Commit]:
         commits = []
         if end_commit:
             rev_range = f"{start_commit}..{end_commit}"
@@ -25,14 +26,14 @@ class GitHandler:
         
         return commits
     
-    def get_commit_diff(self, commit_hash):
+    def get_commit_diff(self, commit_hash: str) -> Optional[git.DiffIndex]:
         commit = self.repo.commit(commit_hash)
         if commit.parents:
             diff = commit.diff(commit.parents[0])
             return diff
         return None
     
-    def get_commit_changes(self, commit):
+    def get_commit_changes(self, commit: git.Commit) -> List[Dict[str, Any]]:
         changes = []
         
         if not commit.parents:

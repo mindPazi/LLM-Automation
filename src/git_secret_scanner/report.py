@@ -1,16 +1,18 @@
 import json
+from typing import List, Dict, Any, Optional, Set
+import git
 from src.git_secret_scanner.heuristics import HeuristicFilter
 
 class ReportGenerator:
     
-    def __init__(self):
+    def __init__(self) -> None:
         self.findings = []
         self.filtered_false_positives = []
         self.seen_secrets = set()
         self.seen_false_positives = set()
         self.heuristic_filter = HeuristicFilter()
     
-    def add_llm_finding(self, commit, file_path, secret, model_name):
+    def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
         unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
         
         if unique_id in self.seen_secrets:
@@ -21,7 +23,7 @@ class ReportGenerator:
         self.findings.append(finding)
         return finding
     
-    def add_validated_llm_finding(self, commit, file_path, secret, model_name):
+    def add_validated_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
         unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
         
         if unique_id in self.seen_secrets:
@@ -33,7 +35,7 @@ class ReportGenerator:
         self.findings.append(finding)
         return finding
     
-    def add_llm_false_positive(self, commit, file_path, secret, model_name):
+    def add_llm_false_positive(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
         unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
         
         if unique_id in self.seen_false_positives:
@@ -46,12 +48,12 @@ class ReportGenerator:
         self.filtered_false_positives.append(false_positive)
         return false_positive
     
-    def add_heuristic_finding(self, commit, file_path, heuristic_finding, finding_type='heuristic_detected_secret'):
+    def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
         finding = self.create_heuristic_finding(commit, file_path, heuristic_finding, finding_type)
         self.findings.append(finding)
         return finding
     
-    def _create_base_finding(self, commit, file_path):
+    def _create_base_finding(self, commit: git.Commit, file_path: str) -> Dict[str, Any]:
         return {
             'commit_hash': commit.hexsha,
             'author': str(commit.author),
@@ -59,7 +61,7 @@ class ReportGenerator:
             'file_path': file_path
         }
     
-    def create_llm_finding(self, commit, file_path, secret, model_name):
+    def create_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Dict[str, Any]:
         finding = self._create_base_finding(commit, file_path)
         
         if 'adjusted_confidence' in secret:
@@ -84,7 +86,7 @@ class ReportGenerator:
             
         return finding
     
-    def create_heuristic_finding(self, commit, file_path, heuristic_finding, finding_type='heuristic_detected_secret'):
+    def create_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
         finding = self._create_base_finding(commit, file_path)
         
         confidence = self.heuristic_filter.calculate_confidence(
@@ -105,13 +107,13 @@ class ReportGenerator:
         })
         return finding
     
-    def get_findings(self):
+    def get_findings(self) -> List[Dict[str, Any]]:
         return self.findings
     
-    def get_false_positives(self):
+    def get_false_positives(self) -> List[Dict[str, Any]]:
         return self.filtered_false_positives
     
-    def save_report(self, repository, scan_mode, commits_count, findings, output_path, false_positives=None):
+    def save_report(self, repository: str, scan_mode: str, commits_count: int, findings: List[Dict[str, Any]], output_path: str, false_positives: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         report = {
             'repository': repository,
             'scan_mode': scan_mode,
@@ -127,17 +129,17 @@ class ReportGenerator:
         
         return report
     
-    def save_report_with_false_positives(self, repository, scan_mode, commits_count, findings, false_positives, output_path):
+    def save_report_with_false_positives(self, repository: str, scan_mode: str, commits_count: int, findings: List[Dict[str, Any]], false_positives: List[Dict[str, Any]], output_path: str) -> Dict[str, Any]:
         return self.save_report(repository, scan_mode, commits_count, findings, output_path, false_positives)
     
-    def save_current_report(self, repository, scan_mode, commits_count, output_path):
+    def save_current_report(self, repository: str, scan_mode: str, commits_count: int, output_path: str) -> Dict[str, Any]:
         return self.save_report(
             repository, scan_mode, commits_count, 
             self.findings, output_path, 
             self.filtered_false_positives if self.filtered_false_positives else None
         )
     
-    def print_summary(self, findings, scan_mode):
+    def print_summary(self, findings: List[Dict[str, Any]], scan_mode: str) -> None:
         llm_secrets_count = sum(1 for f in findings if 'llm_detected' in f.get('finding_type', ''))
         heuristic_secrets_count = sum(1 for f in findings if f.get('finding_type', '') == 'heuristic_detected_secret')
         heuristic_fallback_count = sum(1 for f in findings if 'heuristic_fallback' in f.get('finding_type', ''))
@@ -153,7 +155,8 @@ class ReportGenerator:
             print(f"  - Heuristic fallback detected: {heuristic_fallback_count} additional secret(s)")
         elif scan_mode == 'llm-validated':
             print(f"  - LLM validated secrets: {llm_validated_count} secret(s)")
-    def print_current_summary(self, scan_mode):
+    
+    def print_current_summary(self, scan_mode: str) -> None:
         self.print_summary(self.findings, scan_mode)
         
         if scan_mode == 'llm-validated' and self.filtered_false_positives:
