@@ -98,8 +98,17 @@ class HeuristicFilter:
         
         
         test_values = ['password', 'secret', 'token', 'key', 'test', 'demo', 
-                      'example', 'sample', 'dummy', 'fake', 'placeholder']
+                      'example', 'sample', 'dummy', 'fake', 'placeholder',
+                      'super_secret_value', 'secret_value', 'secret_key']
         if value.lower() in test_values:
+            return False
+        
+        value_lower = value.lower()
+        if ('_secret_' in value_lower or 
+            '_test_' in value_lower or 
+            '_demo_' in value_lower or
+            '_example_' in value_lower or
+            '_sample_' in value_lower):
             return False
         
         return True
@@ -118,3 +127,26 @@ class HeuristicFilter:
                 return True
         
         return False
+    
+    def validate_llm_finding(self, key, value):
+        if not value or not key:
+            return False
+        
+        if not self._is_valid_secret(value):
+            return False
+        
+        if self._is_placeholder(value):
+            return False
+        
+        entropy = self.calculate_entropy(value)
+        if entropy < 2.0:
+            return False
+        
+        key_lower = key.lower()
+        secret_keywords = ['password', 'secret', 'token', 'key', 'api', 'auth', 'credential', 'access']
+        has_secret_keyword = any(keyword in key_lower for keyword in secret_keywords)
+        
+        if not has_secret_keyword and entropy < 3.5:
+            return False
+        
+        return True

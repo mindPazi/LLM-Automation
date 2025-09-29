@@ -14,8 +14,8 @@ def main():
     parser.add_argument('--from', dest='from_commit', type=str, help='Start commit (hash or reference)')
     parser.add_argument('--to', dest='to_commit', type=str, help='End commit (hash or reference, optional)')
     parser.add_argument('--out', type=str, default='report.json', help='Output file')
-    parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-fallback'], 
-                       default='llm-fallback', help='Scan mode: llm-only, heuristic-only, or llm-fallback')
+    parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-fallback', 'llm-validated'], 
+                       default='llm-fallback', help='Scan mode: llm-only, heuristic-only, llm-fallback, or llm-validated (uses heuristics to filter LLM false positives)')
     parser.add_argument('--model', type=str, default='gpt-5-mini', help='Model name (default: gpt-5-mini)')
     
     args = parser.parse_args()
@@ -33,7 +33,7 @@ def main():
             print(f"Analyzing commit {args.from_commit}...")
         
         llm_analyzer = None
-        if args.mode in ['llm-only', 'llm-fallback']:
+        if args.mode in ['llm-only', 'llm-fallback', 'llm-validated']:
             print(f"Initializing {args.model} model...")
             llm_analyzer = LLMAnalyzer(model_name=args.model)
             llm_analyzer.load_model()
@@ -44,8 +44,6 @@ def main():
         
         heuristic_filter = HeuristicFilter()
         report_generator = ReportGenerator()
-        
-        findings = []
         
         for commit in commits:
             print(f"Checking commit {commit.hexsha[:8]}...")
@@ -64,8 +62,6 @@ def main():
                 if file_path.lower() in ['readme.md', 'readme.txt', 'readme.rst', 'readme']:
                     continue
                 
-                llm_findings = []
-                heuristic_findings = []
                 
                 if args.mode == 'llm-only' and llm_analyzer and len(change['added_lines']) > 0:
                     diff_content = '\n'.join(change['added_lines'])
@@ -77,8 +73,7 @@ def main():
                         print(f"  └─ LLM found {len(llm_secrets)} secret(s) in {file_path}")
                     
                     for secret in llm_secrets:
-                        finding = report_generator.create_llm_finding(commit, file_path, secret, args.model)
-                        findings.append(finding)
+                        report_generator.add_llm_finding(commit, file_path, secret, args.model)
                 
                 elif args.mode == 'heuristic-only':
                     heuristic_results = heuristic_filter.apply_regex_filters(change['added_lines'])
@@ -87,8 +82,30 @@ def main():
                         print(f"  └─ Heuristic found {len(heuristic_results)} secret(s) in {file_path}")
                     
                     for heuristic_finding in heuristic_results:
-                        finding = report_generator.create_heuristic_finding(commit, file_path, heuristic_finding)
-                        findings.append(finding)
+                        report_generator.add_heuristic_finding(commit, file_path, heuristic_finding)
+                
+                elif args.mode == 'llm-validated' and llm_analyzer and len(change['added_lines']) > 0:
+                    diff_content = '\n'.join(change['added_lines'])
+                    llm_result = llm_analyzer.analyze_diff(diff_content)
+                    llm_secrets = llm_analyzer.extract_findings(llm_result)
+                    
+                    validated_secrets = []
+                    false_positives_count = 0
+                    
+                    for secret in llm_secrets:
+                        if heuristic_filter.validate_llm_finding(secret['key'], secret['value']):
+                            validated_secrets.append(secret)
+                        else:
+                            false_positives_count += 1
+                            report_generator.add_llm_false_positive(commit, file_path, secret, args.model)
+                    
+                    if validated_secrets:
+                        print(f"  └─ LLM found {len(llm_secrets)} secret(s), {len(validated_secrets)} validated, {false_positives_count} false positives filtered in {file_path}")
+                        
+                        for secret in validated_secrets:
+                            report_generator.add_validated_llm_finding(commit, file_path, secret, args.model)
+                    elif llm_secrets:
+                        print(f"  └─ LLM found {len(llm_secrets)} secret(s), all filtered as false positives in {file_path}")
                 
                 elif args.mode == 'llm-fallback' and len(change['added_lines']) > 0:
                     llm_found_secrets = False
@@ -103,8 +120,7 @@ def main():
                             print(f"  └─ LLM found {len(llm_secrets)} secret(s) in {file_path}")
                             
                             for secret in llm_secrets:
-                                finding = report_generator.create_llm_finding(commit, file_path, secret, args.model)
-                                findings.append(finding)
+                                report_generator.add_llm_finding(commit, file_path, secret, args.model)
                     
                     if not llm_found_secrets:
                         heuristic_results = heuristic_filter.apply_regex_filters(change['added_lines'])
@@ -113,15 +129,14 @@ def main():
                             print(f"  └─ Heuristic found {len(heuristic_results)} secret(s) missed by LLM in {file_path}")
                             
                             for heuristic_finding in heuristic_results:
-                                finding = report_generator.create_heuristic_finding(commit, file_path, heuristic_finding, 'heuristic_fallback_secret')
-                                findings.append(finding)
+                                report_generator.add_heuristic_finding(commit, file_path, heuristic_finding, 'heuristic_fallback_secret')
         
-        report_generator.save_report(args.repo, args.mode, len(commits), findings, args.out)
+        report_generator.save_current_report(args.repo, args.mode, len(commits), args.out)
         
         print(f"\nReport saved to: {args.out}")
-        print(f"Found {len(findings)} potential issues")
+        print(f"Found {len(report_generator.get_findings())} potential issues")
         
-        report_generator.print_summary(findings, args.mode)
+        report_generator.print_current_summary(args.mode)
         
     except Exception as e:
         print(f"Error: {e}")
