@@ -160,6 +160,7 @@ validation:
     - "secret_value"
     - "secret_key"
     - "your_password"
+    - "your_password_here"
     - "my_password"
     - "the_password"
     - "your_secret"
@@ -171,6 +172,7 @@ validation:
     - "your_key"
     - "my_key"
     - "the_key"
+    - "changeme"
   
   # Placeholder patterns
   placeholders:
