@@ -30,19 +30,22 @@ class GitHandler:
         commits = []
         try:
             if end_commit:
-                rev_range = f"{start_commit}..{end_commit}"
-                logger.debug(f"Using range: {rev_range}")
+                
+                
+                rev_range = f"{start_commit}^..{end_commit}"
+                logger.debug(f"Using inclusive range: {rev_range}")
                 for commit in self.repo.iter_commits(rev_range):
                     logger.debug(f"Found commit in range: {commit.hexsha[:8]}")
                     commits.append(commit)
             else:
+                
                 rev_range = f"{start_commit}^..{start_commit}"
                 logger.debug(f"Single commit range: {rev_range}")
                 for commit in self.repo.iter_commits(rev_range):
                     logger.debug(f"Found single commit: {commit.hexsha[:8]}")
                     commits.append(commit)
             
-            logger.info(f"Found {len(commits)} commits in range")
+            logger.info(f"Found {len(commits)} commits in range (inclusive)")
         except Exception as e:
             logger.error(f"Error getting commits range: {e}")
             logger.error(f"Start commit: {start_commit}, End commit: {end_commit}")

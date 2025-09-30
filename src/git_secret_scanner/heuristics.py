@@ -268,8 +268,136 @@ class HeuristicFilter:
     
     def _is_placeholder(self, value: str) -> bool:
         value_lower = value.lower()
-        for placeholder in self.placeholders:
-            if placeholder in value_lower:
+        
+        
+        placeholder_patterns = [
+            r'^(test|demo|example|sample|dummy|fake|mock)_.*$',
+            r'^(your|my|the|example|test|demo|sample)_.*_(here|value|key|token|password|secret)$',
+            r'^changeme$',
+            r'^replaceme$',
+            r'^todo$',
+            r'^fixme$',
+            r'^<[^>]+>$',  
+            r'^\$\{[^}]+\}$',  
+            r'^\{\{[^}]+\}\}$',  
+            r'^xxx+$',  
+            r'^\*+$',  
+            r'^\.+$',  
+            r'^-+$',  
+            r'^placeholder.*$',
+            r'^your[_-].*[_-]here$',
+            r'^replace[_-]?this$',
+            r'^update[_-]?me$',
+            
+            r'^my(secret|password|token|key|api|auth|credential)(password|token|key|secret)?[\d]+$',
+            r'^(your|my|the|test|demo|example|sample)(password|secret|token|key|api|auth)[\d]+$',
+            r'^(password|secret|token|key)[\d]{1,4}$',  
+            r'^(admin|test|demo|example|sample|user)[\d]{1,4}$',  
+            r'.*password123.*',  
+            r'.*secret123.*',  
+        ]
+        
+        for pattern in placeholder_patterns:
+            if re.match(pattern, value_lower):
+                logger.debug(f"Placeholder detected by pattern: {pattern}")
+                return True
+        
+        
+        
+        
+        common_placeholder_words = {
+            'password', 'secret', 'token', 'key', 'api', 'auth',
+            'test', 'demo', 'example', 'sample', 'dummy', 'fake',
+            'placeholder', 'changeme', 'replaceme', 'todo', 'fixme',
+            'password123', 'secret123', 'test123', 'admin123'
+        }
+        if value_lower in common_placeholder_words:
+            logger.debug(f"Placeholder detected: common word '{value_lower}'")
+            return True
+        
+        
+        example_prefixes = ['my', 'your', 'the', 'test', 'demo', 'sample', 'example', 'default']
+        secret_words = ['password', 'secret', 'token', 'key', 'api', 'auth', 'credential', 'pass']
+        
+        for prefix in example_prefixes:
+            for word in secret_words:
+                
+                if value_lower.startswith(prefix + word):
+                    logger.debug(f"Placeholder detected: starts with '{prefix}{word}'")
+                    return True
+                
+                if value_lower.startswith(prefix + '_' + word) or value_lower.startswith(prefix + '-' + word):
+                    logger.debug(f"Placeholder detected: starts with '{prefix}_/{prefix}-' + '{word}'")
+                    return True
+        
+        
+        if re.match(r'.*\d{1,5}$', value):
+            
+            ending_digits = re.search(r'(\d+)$', value).group(1)
+            if ending_digits in ['123', '1234', '12345', '111', '000', '321', '456', '789']:
+                for word in secret_words:
+                    if word in value_lower:
+                        logger.debug(f"Placeholder detected: contains '{word}' with simple number sequence")
+                        return True
+        
+        
+        if len(set(value)) <= 2:  
+            logger.debug(f"Placeholder detected: very low character diversity")
+            return True
+        
+        
+        if self._is_sequential_pattern(value):
+            logger.debug(f"Placeholder detected: sequential pattern")
+            return True
+        
+        
+        entropy = self.calculate_entropy(value)
+        if entropy < 1.5 and len(value) > 4:
+            logger.debug(f"Placeholder detected: very low entropy ({entropy:.2f})")
+            return True
+        
+        
+        keyboard_patterns = ['qwerty', 'asdfgh', 'zxcvbn', '123456', 'abcdef']
+        for pattern in keyboard_patterns:
+            if pattern in value_lower or pattern[::-1] in value_lower:
+                logger.debug(f"Placeholder detected: keyboard pattern")
+                return True
+        
+        
+        placeholder_indicators = ['your_', 'my_', 'the_', '_here', '_value', 
+                                 'example_', 'test_', 'demo_', 'sample_', 
+                                 'default_', 'temp_', 'tmp_', 'fake_', 'mock_']
+        for indicator in placeholder_indicators:
+            if indicator in value_lower:
+                logger.debug(f"Placeholder detected: contains indicator '{indicator}'")
+                return True
+        
+        
+        if re.match(r'^[A-Z][a-z]+(Secret|Password|Token|Key|Api|Auth|Credential)', value):
+            
+            if re.search(r'\d{1,4}$', value):
+                ending = re.search(r'(\d+)$', value).group(1)
+                if ending in ['123', '1234', '12345', '111', '000', '456', '789', '2024', '2025']:
+                    logger.debug(f"Placeholder detected: CamelCase example pattern with simple numbers")
+                    return True
+        
+        return False
+    
+    def _is_sequential_pattern(self, value: str) -> bool:
+        """Check if value is a sequential pattern like 'abcdef' or '123456'"""
+        if len(value) < 3:
+            return False
+        
+        
+        if value.isdigit():
+            diffs = [int(value[i+1]) - int(value[i]) for i in range(len(value)-1)]
+            if all(d == diffs[0] for d in diffs) and abs(diffs[0]) <= 1:
+                return True
+        
+        
+        if value.isalpha():
+            diffs = [ord(value[i+1].lower()) - ord(value[i].lower()) for i in range(len(value)-1)]
+            if all(d == diffs[0] for d in diffs) and abs(diffs[0]) <= 1:
                 return True
         
         return False
