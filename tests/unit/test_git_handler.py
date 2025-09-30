@@ -61,7 +61,8 @@ class TestGitHandler:
         commits = handler.get_commits_range("abc123", "def456")
         
         assert commits == mock_commits
-        mock_repo.iter_commits.assert_called_once_with("abc123..def456")
+        
+        mock_repo.iter_commits.assert_called_once_with("abc123^..def456")
     
     @patch('git.Repo')
     def test_get_commit_changes(self, mock_repo_class):

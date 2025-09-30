@@ -19,7 +19,11 @@ class ReportGenerator:
         self.heuristic_duplicates_count = 0
     
     def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
+        
+        full_value = secret['value']
+        
+        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
+        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
         
         if unique_id in self.seen_secrets:
             self.llm_duplicates_count += 1
@@ -32,7 +36,11 @@ class ReportGenerator:
         return finding
     
     def add_validated_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
+        
+        full_value = secret['value']
+        
+        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
+        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
         
         if unique_id in self.seen_secrets:
             self.llm_duplicates_count += 1
@@ -59,7 +67,17 @@ class ReportGenerator:
         return false_positive
     
     def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Optional[Dict[str, Any]]:
-        unique_id = f"{commit.hexsha}:{file_path}:{heuristic_finding['secret_value']}"
+        
+        
+        secret_val = heuristic_finding['secret_value']
+        if secret_val.endswith("..."):
+            
+            
+            secret_val = secret_val[:-3]  
+        
+        
+        line_num = heuristic_finding.get('line_number', '')
+        unique_id = f"{commit.hexsha}:{file_path}:{line_num}:{secret_val}"
         
         if unique_id in self.seen_secrets:
             self.heuristic_duplicates_count += 1

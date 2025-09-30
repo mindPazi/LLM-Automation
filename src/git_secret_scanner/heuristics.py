@@ -12,19 +12,18 @@ class HeuristicFilter:
     def __init__(self) -> None:
         logger.info("Initializing HeuristicFilter")
         
-        self.min_secret_length = config.get('validation', 'min_secret_length', default=8)
-        self.filter_threshold = config.get('heuristics', 'confidence', 'filter_threshold', default=0.5)
+        self.min_secret_length = config.get('validation', 'min_secret_length')
+        self.filter_threshold = config.get('heuristics', 'confidence', 'filter_threshold')
         
-        self.known_prefixes = config.get('validation', 'known_prefixes', 
-            default=['sk-', 'pk-', 'ghp_', 'gho_', 'ghu_', 'ghs_', 'ghr_'])
+        self.known_prefixes = config.get('validation', 'known_prefixes')
         
-        patterns_config = config.get('patterns', 'secret_patterns', default=[])
+        patterns_config = config.get('patterns', 'secret_patterns')
         self.secret_patterns = []
         for pattern_dict in patterns_config:
             if isinstance(pattern_dict, dict) and 'pattern' in pattern_dict and 'type' in pattern_dict:
                 self.secret_patterns.append((pattern_dict['pattern'], pattern_dict['type']))
         
-        self.known_patterns = config.get('patterns', 'known_patterns', default={})
+        self.known_patterns = config.get('patterns', 'known_patterns')
         
         logger.info("HeuristicFilter initialized successfully")
     
@@ -51,12 +50,18 @@ class HeuristicFilter:
     def apply_regex_filters(self, content: Any) -> List[Dict[str, Any]]:
         logger.debug("Starting regex filter analysis")
         findings = []
+        found_secrets = set()  
         
         lines = content.split('\n') if isinstance(content, str) else content
         logger.debug(f"Processing {len(lines)} lines")
         
         for line_num, line in enumerate(lines, 1):
+            line_has_secret = False  
+            
             for pattern_regex, pattern_type in self.secret_patterns:
+                if line_has_secret:
+                    break  
+                    
                 matches = re.findall(pattern_regex, line, re.IGNORECASE)
                 
                 for match in matches:
@@ -64,10 +69,19 @@ class HeuristicFilter:
                     if len(match) == 3:  
                         key = f"{match[0]}_{match[1]}"
                         value = match[2]
+                    elif len(match) == 2:  
+                        key = match[0]
+                        value = match[1]
                     else:
                         key = match[0] if match else pattern_type
                         value = match[1] if len(match) > 1 else ""
                     
+                    
+                    secret_id = f"{line_num}:{key}:{value}"
+                    
+                    
+                    if secret_id in found_secrets:
+                        continue
                     
                     if self._is_valid_secret(value):
                         entropy = self.calculate_entropy(value)
@@ -80,6 +94,8 @@ class HeuristicFilter:
                             'secret_value': value[:50] + "..." if len(value) > 50 else value,
                             'entropy': entropy
                         })
+                        found_secrets.add(secret_id)
+                        line_has_secret = True  
                         break  
         
         logger.info(f"Regex filters found {len(findings)} potential secrets")

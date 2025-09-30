@@ -46,22 +46,26 @@ heuristics:
 
 # Secret detection patterns
 patterns:
-  # Regex patterns for secret detection
+  # Regex patterns for secret detection - ORDER MATTERS, MORE SPECIFIC FIRST
   secret_patterns:
-    - pattern: "[\"']?([Aa][Pp][Ii][_-]?[Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
-      type: "api_key"
-    - pattern: "[\"']?([Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
-      type: "password"
-    - pattern: "[\"']?([Tt][Oo][Kk][Ee][Nn])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
-      type: "token"
-    - pattern: "[\"']?([Ss][Ee][Cc][Rr][Ee][Tt])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
-      type: "secret"
-    - pattern: "[\"']?([Aa][Cc][Cc][Ee][Ss][Ss][_-]?[Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
-      type: "access_key"
-    - pattern: "[\"']?([Pp][Rr][Ii][Vv][Aa][Tt][Ee][_-]?[Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
-      type: "private_key"
+    # Most specific patterns first to avoid overlaps
     - pattern: "[\"']?([Aa][Uu][Tt][Hh])[_-]?([Tt][Oo][Kk][Ee][Nn])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
       type: "auth_token"
+    - pattern: "[\"']?([Aa][Cc][Cc][Ee][Ss][Ss])[_-]?([Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "access_key"
+    - pattern: "[\"']?([Pp][Rr][Ii][Vv][Aa][Tt][Ee])[_-]?([Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "private_key"
+    - pattern: "[\"']?([Aa][Pp][Ii])[_-]?([Kk][Ee][Yy])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "api_key"
+    - pattern: "[\"']?([Cc][Ll][Ii][Ee][Nn][Tt])[_-]?([Ss][Ee][Cc][Rr][Ee][Tt])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "client_secret"
+    # More generic patterns last
+    - pattern: "[\"']?([Pp][Aa][Ss][Ss][Ww][Oo][Rr][Dd])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "password"
+    - pattern: "[\"']?(?![Aa][Uu][Tt][Hh]|[Aa][Cc][Cc][Ee][Ss][Ss])([Tt][Oo][Kk][Ee][Nn])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "token"
+    - pattern: "[\"']?(?![Cc][Ll][Ii][Ee][Nn][Tt]|[Mm][Ee][Rr][Cc][Hh][Aa][Nn][Tt])([Ss][Ee][Cc][Rr][Ee][Tt])[\"']?\\s*[:=]\\s*[\"']([^\"']+)[\"']"
+      type: "secret"
   
   # Known secret patterns for validation
   known_patterns:
