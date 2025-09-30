@@ -1,6 +1,7 @@
 import re
 import math
 from typing import List, Dict, Any, Tuple, Optional
+import git
 from collections import Counter
 from src.git_secret_scanner.config_loader import config
 from src.git_secret_scanner.logger_config import get_logger
@@ -225,3 +226,28 @@ class HeuristicFilter:
             confidence = min(1.0, confidence + 0.1)
         
         return round(confidence, 2)
+    
+    def process_heuristic_only(self, added_lines: List[str], commit: git.Commit, 
+                              file_path: str, report_generator: Any) -> int:
+        logger.debug(f"Running heuristic filters on {len(added_lines)} lines")
+        heuristic_results = self.apply_regex_filters(added_lines)
+        
+        if heuristic_results:
+            unique_count = 0
+            duplicate_count = 0
+            for heuristic_finding in heuristic_results:
+                logger.debug(f"Adding heuristic finding: {heuristic_finding.get('secret_key', 'unknown')}")
+                result = report_generator.add_heuristic_finding(commit, file_path, heuristic_finding)
+                if result:
+                    unique_count += 1
+                else:
+                    duplicate_count += 1
+            
+            if duplicate_count > 0:
+                logger.info(f"Heuristic found {len(heuristic_results)} secret(s) in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
+            else:
+                logger.info(f"Heuristic found {unique_count} unique secret(s) in {file_path}")
+            return unique_count
+        else:
+            logger.debug(f"No secrets found by heuristics in {file_path}")
+            return 0

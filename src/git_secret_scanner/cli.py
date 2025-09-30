@@ -112,6 +112,10 @@ def main() -> int:
                     logger.debug(f"Skipping readme file: {file_path}")
                     continue
                 
+                if file_path.lower() == 'config.yaml' or file_path.endswith('/config.yaml'):
+                    logger.debug(f"Skipping config.yaml file: {file_path}")
+                    continue
+                
                 if len(change['added_lines']) == 0:
                     logger.debug(f"No added lines in file: {file_path}")
                     continue
@@ -124,22 +128,22 @@ def main() -> int:
                     found_secrets = 0
                     if args.mode == 'llm-only' and llm_analyzer:
                         logger.debug("Processing with LLM-only mode")
-                        found_secrets = process_llm_only(llm_analyzer, change['added_lines'], commit, file_path, 
+                        found_secrets = llm_analyzer.process_llm_only(change['added_lines'], commit, file_path, 
                                        report_generator, args.model)
                     
                     elif args.mode == 'heuristic-only':
                         logger.debug("Processing with heuristic-only mode")
-                        found_secrets = process_heuristic_only(heuristic_filter, change['added_lines'], commit, 
+                        found_secrets = heuristic_filter.process_heuristic_only(change['added_lines'], commit, 
                                              file_path, report_generator)
                     
                     elif args.mode == 'llm-validated' and llm_analyzer:
                         logger.debug("Processing with LLM-validated mode")
-                        found_secrets = process_llm_validated(llm_analyzer, heuristic_filter, change['added_lines'], 
+                        found_secrets = llm_analyzer.process_llm_validated(heuristic_filter, change['added_lines'], 
                                             commit, file_path, report_generator, args.model)
                     
                     elif args.mode == 'llm-fallback':
                         logger.debug("Processing with LLM-fallback mode")
-                        found_secrets = process_llm_fallback(llm_analyzer, heuristic_filter, change['added_lines'], 
+                        found_secrets = llm_analyzer.process_llm_fallback(heuristic_filter, change['added_lines'], 
                                            commit, file_path, report_generator, args.model)
                     
                     secrets_found_in_commit += found_secrets
@@ -172,172 +176,6 @@ def main() -> int:
         return 1
     
     return 0
-
-def analyze_with_llm(llm_analyzer: LLMAnalyzer, added_lines: List[str]) -> List[Dict[str, Any]]:
-    logger.debug(f"Analyzing {len(added_lines)} lines with LLM")
-    diff_content = '\n'.join(added_lines)
-    llm_result = llm_analyzer.analyze_diff(diff_content)
-    findings = llm_analyzer.extract_findings(llm_result)
-    logger.debug(f"LLM found {len(findings)} findings")
-    return findings
-
-def process_llm_only(llm_analyzer: LLMAnalyzer, added_lines: List[str], commit: git.Commit, 
-                     file_path: str, report_generator: ReportGenerator, model_name: str) -> int:
-    llm_secrets = analyze_with_llm(llm_analyzer, added_lines)
-    
-    if llm_secrets:
-        unique_count = 0
-        duplicate_count = 0
-        for secret in llm_secrets:
-            result = report_generator.add_llm_finding(commit, file_path, secret, model_name)
-            if result:
-                unique_count += 1
-            else:
-                duplicate_count += 1
-        
-        if duplicate_count > 0:
-            logger.info(f"LLM found {len(llm_secrets)} secret(s) in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
-        else:
-            logger.info(f"LLM found {unique_count} unique secret(s) in {file_path}")
-        return unique_count
-    else:
-        logger.debug(f"LLM found no secrets in {file_path}")
-        return 0
-
-def process_heuristic_only(heuristic_filter: HeuristicFilter, added_lines: List[str], 
-                          commit: git.Commit, file_path: str, report_generator: ReportGenerator) -> int:
-    logger.debug(f"Running heuristic filters on {len(added_lines)} lines")
-    heuristic_results = heuristic_filter.apply_regex_filters(added_lines)
-    
-    if heuristic_results:
-        unique_count = 0
-        duplicate_count = 0
-        for heuristic_finding in heuristic_results:
-            logger.debug(f"Adding heuristic finding: {heuristic_finding.get('secret_key', 'unknown')}")
-            result = report_generator.add_heuristic_finding(commit, file_path, heuristic_finding)
-            if result:
-                unique_count += 1
-            else:
-                duplicate_count += 1
-        
-        if duplicate_count > 0:
-            logger.info(f"Heuristic found {len(heuristic_results)} secret(s) in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
-        else:
-            logger.info(f"Heuristic found {unique_count} unique secret(s) in {file_path}")
-        return unique_count
-    else:
-        logger.debug(f"No secrets found by heuristics in {file_path}")
-        return 0
-
-def process_llm_validated(llm_analyzer: LLMAnalyzer, heuristic_filter: HeuristicFilter, 
-                         added_lines: List[str], commit: git.Commit, file_path: str, 
-                         report_generator: ReportGenerator, model_name: str) -> int:
-    llm_secrets = analyze_with_llm(llm_analyzer, added_lines)
-    
-    if not llm_secrets:
-        logger.debug(f"LLM found no secrets in {file_path}")
-        return 0
-    
-    unique_secrets = []
-    for secret in llm_secrets:
-        unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
-        
-        if unique_id not in report_generator.seen_secrets:
-            unique_secrets.append(secret)
-    
-    validated_secrets = []
-    false_positives = []
-    
-    for secret in unique_secrets:
-        initial_confidence = heuristic_filter.calculate_confidence(
-            secret['key'], 
-            secret['value'], 
-            secret.get('type')
-        )
-        
-        adjusted_confidence, should_filter = heuristic_filter.adjust_confidence_with_heuristics(
-            initial_confidence, 
-            secret['key'], 
-            secret['value']
-        )
-        
-        secret['adjusted_confidence'] = round(adjusted_confidence, 2)
-        
-        if should_filter:
-            secret['filtered_reason'] = f'Confidence too low: {adjusted_confidence:.2f} < 0.5'
-            false_positives.append(secret)
-        else:
-            validated_secrets.append(secret)
-    
-    actually_added = 0
-    for secret in validated_secrets:
-        result = report_generator.add_validated_llm_finding(commit, file_path, secret, model_name)
-        if result is not None:
-            actually_added += 1
-    
-    false_positives_added = 0
-    for secret in false_positives:
-        result = report_generator.add_llm_false_positive(commit, file_path, secret, model_name)
-        if result is not None:
-            false_positives_added += 1
-    
-    if actually_added > 0 or false_positives_added > 0:
-        total_unique = actually_added + false_positives_added
-        logger.info(f"LLM found {total_unique} secret(s) → {actually_added} validated (confidence ≥ 0.5), {false_positives_added} filtered (confidence < 0.5) in {file_path}")
-    elif len(unique_secrets) > 0:
-        logger.info(f"LLM found {len(unique_secrets)} secret(s) → all filtered as low confidence in {file_path}")
-    
-    return actually_added
-
-def process_llm_fallback(llm_analyzer: Optional[LLMAnalyzer], heuristic_filter: HeuristicFilter, 
-                        added_lines: List[str], commit: git.Commit, file_path: str, 
-                        report_generator: ReportGenerator, model_name: str) -> int:
-    llm_found_secrets = False
-    
-    if llm_analyzer:
-        llm_secrets = analyze_with_llm(llm_analyzer, added_lines)
-        
-        if llm_secrets:
-            llm_found_secrets = True
-            unique_count = 0
-            duplicate_count = 0
-            for secret in llm_secrets:
-                result = report_generator.add_llm_finding(commit, file_path, secret, model_name)
-                if result:
-                    unique_count += 1
-                else:
-                    duplicate_count += 1
-            
-            if duplicate_count > 0:
-                logger.info(f"LLM found {len(llm_secrets)} secret(s) in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
-            else:
-                logger.info(f"LLM found {unique_count} unique secret(s) in {file_path}")
-    
-    if not llm_found_secrets:
-        heuristic_results = heuristic_filter.apply_regex_filters(added_lines)
-        
-        if heuristic_results:
-            unique_count = 0
-            duplicate_count = 0
-            for heuristic_finding in heuristic_results:
-                result = report_generator.add_heuristic_finding(commit, file_path, heuristic_finding, 
-                                                               'heuristic_fallback_secret')
-                if result:
-                    unique_count += 1
-                else:
-                    duplicate_count += 1
-            
-            if duplicate_count > 0:
-                logger.info(f"Heuristic found {len(heuristic_results)} secret(s) missed by LLM in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
-            else:
-                logger.info(f"Heuristic found {unique_count} unique secret(s) missed by LLM in {file_path}")
-            
-            return unique_count
-        else:
-            logger.debug(f"No secrets found in {file_path}")
-            return 0
-    
-    return unique_count if llm_found_secrets else 0
 
 if __name__ == "__main__":
     main()

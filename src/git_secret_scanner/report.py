@@ -11,8 +11,8 @@ class ReportGenerator:
     def __init__(self) -> None:
         self.findings = []
         self.filtered_false_positives = []
+        self.llm_low_confidence = []
         self.seen_secrets = set()
-        self.seen_false_positives = set()
         self.heuristic_filter = HeuristicFilter()
         self.duplicates_count = 0
         self.llm_duplicates_count = 0
@@ -54,17 +54,38 @@ class ReportGenerator:
         return finding
     
     def add_llm_false_positive(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        unique_id = f"{commit.hexsha}:{file_path}:{secret['value']}"
+        full_value = secret['value']
+        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
+        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
         
-        if unique_id in self.seen_false_positives:
+        if unique_id in self.seen_secrets:
+            self.llm_duplicates_count += 1
+            self.duplicates_count += 1
             return None
             
-        self.seen_false_positives.add(unique_id)
+        self.seen_secrets.add(unique_id)
         false_positive = self.create_llm_finding(commit, file_path, secret, model_name)
         false_positive['finding_type'] = 'llm_false_positive'
-        false_positive['filtered_reason'] = 'Failed heuristic validation'
+        false_positive['filtered_reason'] = secret.get('filtered_reason', 'Failed heuristic validation')
         self.filtered_false_positives.append(false_positive)
         return false_positive
+    
+    def add_llm_low_confidence(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
+        full_value = secret['value']
+        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
+        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
+        
+        if unique_id in self.seen_secrets:
+            self.llm_duplicates_count += 1
+            self.duplicates_count += 1
+            return None
+            
+        self.seen_secrets.add(unique_id)
+        low_conf = self.create_llm_finding(commit, file_path, secret, model_name)
+        low_conf['finding_type'] = 'llm_low_confidence'
+        low_conf['filtered_reason'] = secret.get('filtered_reason', 'Low confidence score')
+        self.llm_low_confidence.append(low_conf)
+        return low_conf
     
     def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Optional[Dict[str, Any]]:
         
@@ -149,7 +170,12 @@ class ReportGenerator:
     def get_false_positives(self) -> List[Dict[str, Any]]:
         return self.filtered_false_positives
     
-    def save_report(self, repository: str, scan_mode: str, commits_count: int, findings: List[Dict[str, Any]], output_path: str, false_positives: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+    def get_llm_low_confidence(self) -> List[Dict[str, Any]]:
+        return self.llm_low_confidence
+    
+    def save_report(self, repository: str, scan_mode: str, commits_count: int, findings: List[Dict[str, Any]], 
+                   output_path: str, false_positives: Optional[List[Dict[str, Any]]] = None,
+                   llm_low_confidence: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         report = {
             'repository': repository,
             'scan_mode': scan_mode,
@@ -157,8 +183,11 @@ class ReportGenerator:
             'findings': findings
         }
         
+        if llm_low_confidence:
+            report['llm_low_confidence_secrets'] = llm_low_confidence
+        
         if false_positives:
-            report['filtered_false_positives'] = false_positives
+            report['heuristic_filtered_false_positives'] = false_positives
         
         with open(output_path, 'w') as f:
             json.dump(report, f, indent=2)
@@ -172,7 +201,8 @@ class ReportGenerator:
         return self.save_report(
             repository, scan_mode, commits_count, 
             self.findings, output_path, 
-            self.filtered_false_positives if self.filtered_false_positives else None
+            self.filtered_false_positives if self.filtered_false_positives else None,
+            self.llm_low_confidence if self.llm_low_confidence else None
         )
     
     def print_summary(self, findings: List[Dict[str, Any]], scan_mode: str) -> None:
@@ -203,5 +233,8 @@ class ReportGenerator:
     def print_current_summary(self, scan_mode: str) -> None:
         self.print_summary(self.findings, scan_mode)
         
+        if scan_mode in ['llm-only', 'llm-fallback'] and self.llm_low_confidence:
+            logger.info(f"  - LLM low confidence secrets filtered: {len(self.llm_low_confidence)}")
+        
         if scan_mode == 'llm-validated' and self.filtered_false_positives:
-            logger.info(f"  - False positives removed: {len(self.filtered_false_positives)}")
+            logger.info(f"  - Heuristic validation filtered: {len(self.filtered_false_positives)}")
