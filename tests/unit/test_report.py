@@ -16,18 +16,18 @@ class TestReportGenerator:
         secret2 = {'key': 'api_key_copy', 'value': 'sk-proj-123456'}
         secret3 = {'key': 'another_key', 'value': 'different-value'}
         
-        result1 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret1, "gpt-5-mini")
+        result1 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret1, "gpt-5-mini", category='raw')
         assert result1 is not None
         assert len(self.report.get_findings()) == 1
         assert self.report.llm_duplicates_count == 0
         
-        result2 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret2, "gpt-5-mini")
+        result2 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret2, "gpt-5-mini", category='raw')
         assert result2 is None
         assert len(self.report.get_findings()) == 1
         assert self.report.llm_duplicates_count == 1
         assert self.report.duplicates_count == 1
         
-        result3 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret3, "gpt-5-mini")
+        result3 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret3, "gpt-5-mini", category='raw')
         assert result3 is not None
         assert len(self.report.get_findings()) == 2
         assert self.report.llm_duplicates_count == 1
@@ -79,8 +79,8 @@ class TestReportGenerator:
     def test_validated_llm_findings(self):
         secret = {'key': 'token', 'value': 'ghp_abc123', 'adjusted_confidence': 0.75}
         
-        result = self.report.add_validated_llm_finding(
-            self.mock_commit, "file.py", secret, "gpt-5-mini"
+        result = self.report.add_llm_finding(
+            self.mock_commit, "file.py", secret, "gpt-5-mini", category='validated'
         )
         
         assert result is not None
@@ -90,8 +90,8 @@ class TestReportGenerator:
     def test_false_positives_tracking(self):
         secret = {'key': 'test_key', 'value': 'test123'}
         
-        result = self.report.add_llm_false_positive(
-            self.mock_commit, "file.py", secret, "gpt-5-mini"
+        result = self.report.add_llm_finding(
+            self.mock_commit, "file.py", secret, "gpt-5-mini", category='false_positive'
         )
         
         assert result is not None
@@ -149,12 +149,12 @@ class TestReportGenerator:
         
         mock_commit1 = MagicMock()
         mock_commit1.hexsha = "commit1"
-        result1 = self.report.add_llm_finding(mock_commit1, "file.py", secret, "gpt-5-mini")
+        result1 = self.report.add_llm_finding(mock_commit1, "file.py", secret, "gpt-5-mini", category='raw')
         assert result1 is not None
         
         mock_commit2 = MagicMock()
         mock_commit2.hexsha = "commit2"
-        result2 = self.report.add_llm_finding(mock_commit2, "file.py", secret, "gpt-5-mini")
+        result2 = self.report.add_llm_finding(mock_commit2, "file.py", secret, "gpt-5-mini", category='raw')
         assert result2 is not None
         
         assert len(self.report.get_findings()) == 2
@@ -163,10 +163,10 @@ class TestReportGenerator:
     def test_duplicates_across_files(self):
         secret = {'key': 'api_key', 'value': 'sk-123'}
         
-        result1 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret, "gpt-5-mini")
+        result1 = self.report.add_llm_finding(self.mock_commit, "file1.py", secret, "gpt-5-mini", category='raw')
         assert result1 is not None
         
-        result2 = self.report.add_llm_finding(self.mock_commit, "file2.py", secret, "gpt-5-mini")
+        result2 = self.report.add_llm_finding(self.mock_commit, "file2.py", secret, "gpt-5-mini", category='raw')
         assert result2 is not None
         
         assert len(self.report.get_findings()) == 2

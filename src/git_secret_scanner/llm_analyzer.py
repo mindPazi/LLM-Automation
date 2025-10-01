@@ -71,13 +71,12 @@ class LLMAnalyzer:
                 
                 
                 if not any(field in json_data for field in sensitive_fields):
-                    json_str_short = json_str[:100]
-                    unique_id = f"{key}:{json_str_short[:50]}"
+                    unique_id = f"{key}:{json_str[:50]}"
                     if unique_id not in seen_findings:
                         seen_findings.add(unique_id)
                         findings.append({
                             'key': key,
-                            'value': json_str_short,
+                            'value': json_str[:100],
                             'type': 'llm_detected_secret'
                         })
             except json.JSONDecodeError:
@@ -207,7 +206,7 @@ Commit message:
     def _process_llm_secrets(self, llm_secrets: List[Dict[str, Any]], 
                                             heuristic_filter: Any, commit: git.Commit,
                                             file_path: str, report_generator: Any, 
-                                            model_name: str, add_method: str = 'add_llm_finding') -> int:
+                                            model_name: str) -> int:
         unique_count = 0
         low_confidence_count = 0
         duplicate_count = 0
@@ -222,12 +221,11 @@ Commit message:
             
             if confidence < 0.5:
                 secret['filtered_reason'] = f'Confidence too low: {confidence:.2f} < 0.5'
-                result = report_generator.add_llm_low_confidence(commit, file_path, secret, model_name)
+                result = report_generator.add_llm_finding(commit, file_path, secret, model_name, category='low_confidence')
                 if result:
                     low_confidence_count += 1
             else:
-                method = getattr(report_generator, add_method)
-                result = method(commit, file_path, secret, model_name)
+                result = report_generator.add_llm_finding(commit, file_path, secret, model_name, category='raw')
                 if result:
                     unique_count += 1
                 else:
@@ -297,13 +295,13 @@ Commit message:
         
         actually_added = 0
         for secret in validated_secrets:
-            result = report_generator.add_validated_llm_finding(commit, file_path, secret, model_name)
+            result = report_generator.add_llm_finding(commit, file_path, secret, model_name, category='validated')
             if result is not None:
                 actually_added += 1
         
         false_positives_added = 0
         for secret in false_positives:
-            result = report_generator.add_llm_false_positive(commit, file_path, secret, model_name)
+            result = report_generator.add_llm_finding(commit, file_path, secret, model_name, category='false_positive')
             if result is not None:
                 false_positives_added += 1
         

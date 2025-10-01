@@ -1,5 +1,5 @@
 import json
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Literal
 import git
 from src.git_secret_scanner.heuristics import HeuristicFilter
 from src.git_secret_scanner.logger_config import get_logger
@@ -18,9 +18,28 @@ class ReportGenerator:
         self.llm_duplicates_count = 0
         self.heuristic_duplicates_count = 0
     
-    def _add_llm_finding_base(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], 
-                             model_name: str, finding_type: str, target_list: List[Dict[str, Any]],
-                             filtered_reason: Optional[str] = None) -> Optional[Dict[str, Any]]:
+    def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], 
+                        model_name: str, category: Literal['raw', 'validated', 'false_positive', 'low_confidence'] = 'raw') -> Optional[Dict[str, Any]]:
+        if category == 'raw':
+            finding_type = 'llm_detected_secret'
+            target_list = self.findings
+            filtered_reason = None
+        elif category == 'validated':
+            finding_type = 'llm_validated_secret'
+            target_list = self.findings
+            filtered_reason = None
+        elif category == 'false_positive':
+            finding_type = 'llm_false_positive'
+            target_list = self.filtered_false_positives
+            filtered_reason = 'Failed heuristic validation'
+        elif category == 'low_confidence':
+            finding_type = 'llm_low_confidence'
+            target_list = self.llm_low_confidence
+            filtered_reason = 'Low confidence score'
+        else:
+            raise ValueError(f"Invalid category: {category}. Must be 'raw', 'validated', 'false_positive', or 'low_confidence'")
+        
+        
         full_value = secret['value']
         line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
         unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
@@ -31,6 +50,8 @@ class ReportGenerator:
             return None
             
         self.seen_secrets.add(unique_id)
+        
+        
         finding = self._create_llm_finding(commit, file_path, secret, model_name)
         finding['finding_type'] = finding_type
         
@@ -40,31 +61,11 @@ class ReportGenerator:
         target_list.append(finding)
         return finding
     
-    def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        return self._add_llm_finding_base(commit, file_path, secret, model_name, 
-                                         'llm_detected_secret', self.findings)
-    
-    def add_validated_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        return self._add_llm_finding_base(commit, file_path, secret, model_name,
-                                         'llm_validated_secret', self.findings)
-    
-    def add_llm_false_positive(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        return self._add_llm_finding_base(commit, file_path, secret, model_name,
-                                         'llm_false_positive', self.filtered_false_positives,
-                                         'Failed heuristic validation')
-    
-    def add_llm_low_confidence(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        return self._add_llm_finding_base(commit, file_path, secret, model_name,
-                                         'llm_low_confidence', self.llm_low_confidence,
-                                         'Low confidence score')
-    
-    def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Optional[Dict[str, Any]]:
-        
+    def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], 
+                            finding_type: str = 'heuristic_detected_secret') -> Optional[Dict[str, Any]]:
         
         secret_val = heuristic_finding['secret_value']
         if secret_val.endswith("..."):
-            
-            
             secret_val = secret_val[:-3]  
         
         
@@ -92,6 +93,7 @@ class ReportGenerator:
     def _create_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Dict[str, Any]:
         finding = self._create_base_finding(commit, file_path)
         
+        
         if 'adjusted_confidence' in secret:
             confidence = secret['adjusted_confidence']
         else:
@@ -102,7 +104,7 @@ class ReportGenerator:
             )
         
         finding.update({
-            'finding_type': 'llm_detected_secret',
+            'finding_type': 'llm_detected_secret',  
             'model': model_name,
             'secret_key': secret['key'],
             'secret_value': secret['value'],
@@ -114,7 +116,8 @@ class ReportGenerator:
             
         return finding
     
-    def _create_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
+    def _create_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], 
+                                 finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
         finding = self._create_base_finding(commit, file_path)
         
         confidence = self.heuristic_filter.calculate_confidence(

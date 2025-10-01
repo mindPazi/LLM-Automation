@@ -149,7 +149,7 @@ class HeuristicFilter:
             logger.debug(f"LLM finding rejected with low confidence: {confidence}")
             return False
     
-    def adjust_confidence_with_heuristics(self, initial_confidence: float, key: str, value: str) -> Tuple[float, bool]:
+    def adjust_confidence_with_heuristics(self, key: str, value: str) -> Tuple[float, bool]:
         confidence = self.calculate_confidence(key, value)
         should_filter = confidence < self.filter_threshold
         logger.debug(f"Confidence: {confidence:.2f}, filter: {should_filter}")
