@@ -1,5 +1,5 @@
 import json
-from typing import List, Dict, Any, Optional, Set
+from typing import List, Dict, Any, Optional
 import git
 from src.git_secret_scanner.heuristics import HeuristicFilter
 from src.git_secret_scanner.logger_config import get_logger
@@ -193,9 +193,6 @@ class ReportGenerator:
             json.dump(report, f, indent=2)
         
         return report
-    
-    def save_report_with_false_positives(self, repository: str, scan_mode: str, commits_count: int, findings: List[Dict[str, Any]], false_positives: List[Dict[str, Any]], output_path: str) -> Dict[str, Any]:
-        return self.save_report(repository, scan_mode, commits_count, findings, output_path, false_positives)
     
     def save_current_report(self, repository: str, scan_mode: str, commits_count: int, output_path: str) -> Dict[str, Any]:
         return self.save_report(

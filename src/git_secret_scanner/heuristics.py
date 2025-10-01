@@ -24,8 +24,6 @@ class HeuristicFilter:
             if isinstance(pattern_dict, dict) and 'pattern' in pattern_dict and 'type' in pattern_dict:
                 self.secret_patterns.append((pattern_dict['pattern'], pattern_dict['type']))
         
-        self.known_patterns = config.get('patterns', 'known_patterns')
-        
         logger.info("HeuristicFilter initialized successfully")
     
     def apply_filters(self, potential_issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:

@@ -1,4 +1,4 @@
-import pytest
+
 from unittest.mock import MagicMock
 from src.git_secret_scanner.report import ReportGenerator
 

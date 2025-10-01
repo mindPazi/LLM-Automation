@@ -22,7 +22,13 @@ class TestRealGitIntegration:
         
         
         assert hasattr(self.git_handler.repo, 'heads')
-        assert hasattr(self.git_handler.repo, 'active_branch')
+        
+        try:
+            branch = self.git_handler.repo.active_branch
+            assert isinstance(branch.name, str)
+        except TypeError:
+            
+            assert self.git_handler.repo.head.is_detached
     
     def test_get_recent_commits(self):
         

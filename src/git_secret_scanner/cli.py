@@ -1,7 +1,5 @@
 import argparse
-import os
-from typing import List, Dict, Any, Optional
-import git
+import sys
 from dotenv import load_dotenv
 from src.git_secret_scanner.git_handler import GitHandler
 from src.git_secret_scanner.llm_analyzer import LLMAnalyzer
@@ -185,4 +183,4 @@ def main() -> int:
     return 0
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())

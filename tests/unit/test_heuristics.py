@@ -1,4 +1,4 @@
-import pytest
+
 from src.git_secret_scanner.heuristics import HeuristicFilter
 
 

@@ -15,7 +15,7 @@ def setup_logger(name: str = "git_secret_scanner",
         datefmt='%Y-%m-%d %H:%M:%S'
     )
     
-    console_handler = logging.StreamHandler(sys.stdout)
+    console_handler = logging.StreamHandler(sys.stderr)
     console_handler.setLevel(getattr(logging, level.upper()))
     console_handler.setFormatter(formatter)
     logger.addHandler(console_handler)
