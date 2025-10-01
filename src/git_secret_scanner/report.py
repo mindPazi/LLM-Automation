@@ -18,10 +18,10 @@ class ReportGenerator:
         self.llm_duplicates_count = 0
         self.heuristic_duplicates_count = 0
     
-    def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        
+    def _add_llm_finding_base(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], 
+                             model_name: str, finding_type: str, target_list: List[Dict[str, Any]],
+                             filtered_reason: Optional[str] = None) -> Optional[Dict[str, Any]]:
         full_value = secret['value']
-        
         line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
         unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
         
@@ -31,61 +31,32 @@ class ReportGenerator:
             return None
             
         self.seen_secrets.add(unique_id)
-        finding = self.create_llm_finding(commit, file_path, secret, model_name)
-        self.findings.append(finding)
+        finding = self._create_llm_finding(commit, file_path, secret, model_name)
+        finding['finding_type'] = finding_type
+        
+        if filtered_reason:
+            finding['filtered_reason'] = secret.get('filtered_reason', filtered_reason)
+            
+        target_list.append(finding)
         return finding
+    
+    def add_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
+        return self._add_llm_finding_base(commit, file_path, secret, model_name, 
+                                         'llm_detected_secret', self.findings)
     
     def add_validated_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        
-        full_value = secret['value']
-        
-        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
-        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
-        
-        if unique_id in self.seen_secrets:
-            self.llm_duplicates_count += 1
-            self.duplicates_count += 1
-            return None
-            
-        self.seen_secrets.add(unique_id)
-        finding = self.create_llm_finding(commit, file_path, secret, model_name)
-        finding['finding_type'] = 'llm_validated_secret'
-        self.findings.append(finding)
-        return finding
+        return self._add_llm_finding_base(commit, file_path, secret, model_name,
+                                         'llm_validated_secret', self.findings)
     
     def add_llm_false_positive(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        full_value = secret['value']
-        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
-        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
-        
-        if unique_id in self.seen_secrets:
-            self.llm_duplicates_count += 1
-            self.duplicates_count += 1
-            return None
-            
-        self.seen_secrets.add(unique_id)
-        false_positive = self.create_llm_finding(commit, file_path, secret, model_name)
-        false_positive['finding_type'] = 'llm_false_positive'
-        false_positive['filtered_reason'] = secret.get('filtered_reason', 'Failed heuristic validation')
-        self.filtered_false_positives.append(false_positive)
-        return false_positive
+        return self._add_llm_finding_base(commit, file_path, secret, model_name,
+                                         'llm_false_positive', self.filtered_false_positives,
+                                         'Failed heuristic validation')
     
     def add_llm_low_confidence(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Optional[Dict[str, Any]]:
-        full_value = secret['value']
-        line_info = f":{secret.get('line_number', '')}" if 'line_number' in secret else ""
-        unique_id = f"{commit.hexsha}:{file_path}{line_info}:{full_value}"
-        
-        if unique_id in self.seen_secrets:
-            self.llm_duplicates_count += 1
-            self.duplicates_count += 1
-            return None
-            
-        self.seen_secrets.add(unique_id)
-        low_conf = self.create_llm_finding(commit, file_path, secret, model_name)
-        low_conf['finding_type'] = 'llm_low_confidence'
-        low_conf['filtered_reason'] = secret.get('filtered_reason', 'Low confidence score')
-        self.llm_low_confidence.append(low_conf)
-        return low_conf
+        return self._add_llm_finding_base(commit, file_path, secret, model_name,
+                                         'llm_low_confidence', self.llm_low_confidence,
+                                         'Low confidence score')
     
     def add_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Optional[Dict[str, Any]]:
         
@@ -106,7 +77,7 @@ class ReportGenerator:
             return None
             
         self.seen_secrets.add(unique_id)
-        finding = self.create_heuristic_finding(commit, file_path, heuristic_finding, finding_type)
+        finding = self._create_heuristic_finding(commit, file_path, heuristic_finding, finding_type)
         self.findings.append(finding)
         return finding
     
@@ -118,7 +89,7 @@ class ReportGenerator:
             'file_path': file_path
         }
     
-    def create_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Dict[str, Any]:
+    def _create_llm_finding(self, commit: git.Commit, file_path: str, secret: Dict[str, Any], model_name: str) -> Dict[str, Any]:
         finding = self._create_base_finding(commit, file_path)
         
         if 'adjusted_confidence' in secret:
@@ -143,7 +114,7 @@ class ReportGenerator:
             
         return finding
     
-    def create_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
+    def _create_heuristic_finding(self, commit: git.Commit, file_path: str, heuristic_finding: Dict[str, Any], finding_type: str = 'heuristic_detected_secret') -> Dict[str, Any]:
         finding = self._create_base_finding(commit, file_path)
         
         confidence = self.heuristic_filter.calculate_confidence(

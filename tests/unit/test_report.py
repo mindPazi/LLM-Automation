@@ -102,7 +102,7 @@ class TestReportGenerator:
     def test_create_finding_structure(self):
         secret = {'key': 'api_key', 'value': 'sk-proj-123456'}
         
-        finding = self.report.create_llm_finding(
+        finding = self.report._create_llm_finding(
             self.mock_commit, "test.py", secret, "gpt-5-mini"
         )
         

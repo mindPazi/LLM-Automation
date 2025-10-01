@@ -6,6 +6,7 @@ import git
 from openai import OpenAI
 from src.git_secret_scanner.config_loader import config
 from src.git_secret_scanner.logger_config import get_logger
+from src.git_secret_scanner.heuristics import HeuristicFilter
 
 logger = get_logger(__name__)
 
@@ -203,45 +204,53 @@ Commit message:
         logger.debug(f"LLM found {len(findings)} findings")
         return findings
     
+    def _process_llm_secrets(self, llm_secrets: List[Dict[str, Any]], 
+                                            heuristic_filter: Any, commit: git.Commit,
+                                            file_path: str, report_generator: Any, 
+                                            model_name: str, add_method: str = 'add_llm_finding') -> int:
+        unique_count = 0
+        low_confidence_count = 0
+        duplicate_count = 0
+        
+        for secret in llm_secrets:
+            confidence = heuristic_filter.calculate_confidence(
+                secret['key'], 
+                secret['value'], 
+                secret.get('type')
+            )
+            secret['confidence'] = round(confidence, 2)
+            
+            if confidence < 0.5:
+                secret['filtered_reason'] = f'Confidence too low: {confidence:.2f} < 0.5'
+                result = report_generator.add_llm_low_confidence(commit, file_path, secret, model_name)
+                if result:
+                    low_confidence_count += 1
+            else:
+                method = getattr(report_generator, add_method)
+                result = method(commit, file_path, secret, model_name)
+                if result:
+                    unique_count += 1
+                else:
+                    duplicate_count += 1
+        
+        if unique_count > 0 or low_confidence_count > 0:
+            logger.info(f"LLM found {unique_count + low_confidence_count} secret(s) in {file_path}: {unique_count} high confidence, {low_confidence_count} low confidence (filtered)")
+        if duplicate_count > 0:
+            logger.info(f"  Duplicates filtered: {duplicate_count}")
+            
+        return unique_count
+    
     def process_llm_only(self, added_lines: List[str], commit: git.Commit, 
                         file_path: str, report_generator: Any, model_name: str) -> int:
-        from src.git_secret_scanner.heuristics import HeuristicFilter
         
         llm_secrets = self.analyze_lines(added_lines)
         
         if llm_secrets:
             heuristic_filter = HeuristicFilter()
-            
-            unique_count = 0
-            low_confidence_count = 0
-            duplicate_count = 0
-            
-            for secret in llm_secrets:
-                confidence = heuristic_filter.calculate_confidence(
-                    secret['key'], 
-                    secret['value'], 
-                    secret.get('type')
-                )
-                secret['confidence'] = round(confidence, 2)
-                
-                if confidence < 0.5:
-                    secret['filtered_reason'] = f'Confidence too low: {confidence:.2f} < 0.5'
-                    result = report_generator.add_llm_low_confidence(commit, file_path, secret, model_name)
-                    if result:
-                        low_confidence_count += 1
-                else:
-                    result = report_generator.add_llm_finding(commit, file_path, secret, model_name)
-                    if result:
-                        unique_count += 1
-                    else:
-                        duplicate_count += 1
-            
-            if unique_count > 0 or low_confidence_count > 0:
-                logger.info(f"LLM found {unique_count + low_confidence_count} secret(s) in {file_path}: {unique_count} high confidence, {low_confidence_count} low confidence (filtered)")
-            if duplicate_count > 0:
-                logger.info(f"  Duplicates filtered: {duplicate_count}")
-            
-            return unique_count
+            return self._process_llm_secrets(
+                llm_secrets, heuristic_filter, commit, file_path, 
+                report_generator, model_name
+            )
         else:
             logger.debug(f"LLM found no secrets in {file_path}")
             return 0
@@ -309,63 +318,35 @@ Commit message:
     def process_llm_fallback(self, heuristic_filter: Any, added_lines: List[str], 
                             commit: git.Commit, file_path: str, 
                             report_generator: Any, model_name: str) -> int:
-        llm_found_secrets = False
-        unique_count = 0
-        
         llm_secrets = self.analyze_lines(added_lines)
         
         if llm_secrets:
-            llm_found_secrets = True
-            low_confidence_count = 0
+            unique_count = self._process_llm_secrets(
+                llm_secrets, heuristic_filter, commit, file_path, 
+                report_generator, model_name
+            )
+            return unique_count
+        
+        
+        heuristic_results = heuristic_filter.apply_regex_filters(added_lines)
+        
+        if heuristic_results:
+            unique_count = 0
             duplicate_count = 0
-            
-            for secret in llm_secrets:
-                confidence = heuristic_filter.calculate_confidence(
-                    secret['key'], 
-                    secret['value'], 
-                    secret.get('type')
-                )
-                secret['confidence'] = round(confidence, 2)
-                
-                if confidence < 0.5:
-                    secret['filtered_reason'] = f'Confidence too low: {confidence:.2f} < 0.5'
-                    result = report_generator.add_llm_low_confidence(commit, file_path, secret, model_name)
-                    if result:
-                        low_confidence_count += 1
+            for heuristic_finding in heuristic_results:
+                result = report_generator.add_heuristic_finding(commit, file_path, heuristic_finding, 
+                                                               'heuristic_fallback_secret')
+                if result:
+                    unique_count += 1
                 else:
-                    result = report_generator.add_llm_finding(commit, file_path, secret, model_name)
-                    if result:
-                        unique_count += 1
-                    else:
-                        duplicate_count += 1
+                    duplicate_count += 1
             
-            if unique_count > 0 or low_confidence_count > 0:
-                logger.info(f"LLM found {unique_count + low_confidence_count} secret(s) in {file_path}: {unique_count} high confidence, {low_confidence_count} low confidence (filtered)")
             if duplicate_count > 0:
-                logger.info(f"  Duplicates filtered: {duplicate_count}")
-        
-        if not llm_found_secrets:
-            heuristic_results = heuristic_filter.apply_regex_filters(added_lines)
-            
-            if heuristic_results:
-                unique_count = 0
-                duplicate_count = 0
-                for heuristic_finding in heuristic_results:
-                    result = report_generator.add_heuristic_finding(commit, file_path, heuristic_finding, 
-                                                                   'heuristic_fallback_secret')
-                    if result:
-                        unique_count += 1
-                    else:
-                        duplicate_count += 1
-                
-                if duplicate_count > 0:
-                    logger.info(f"Heuristic found {len(heuristic_results)} secret(s) missed by LLM in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
-                else:
-                    logger.info(f"Heuristic found {unique_count} unique secret(s) missed by LLM in {file_path}")
-                
-                return unique_count
+                logger.info(f"Heuristic found {len(heuristic_results)} secret(s) missed by LLM in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
             else:
-                logger.debug(f"No secrets found in {file_path}")
-                return 0
-        
-        return unique_count if llm_found_secrets else 0
+                logger.info(f"Heuristic found {unique_count} unique secret(s) missed by LLM in {file_path}")
+            
+            return unique_count
+        else:
+            logger.debug(f"No secrets found in {file_path}")
+            return 0

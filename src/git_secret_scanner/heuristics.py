@@ -133,7 +133,7 @@ class HeuristicFilter:
         return True
     
     
-    def validate_llm_finding(self, key: str, value: str) -> bool:
+    def _validate_llm_finding(self, key: str, value: str) -> bool:
         logger.debug(f"Validating LLM finding: {key[:20] if key else 'no-key'}...")
         
         if not value or not key:

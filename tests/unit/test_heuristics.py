@@ -34,18 +34,18 @@ class TestHeuristicFilter:
         assert self.filter._is_valid_secret("this has too many spaces in it") == False
     
     def test_validate_llm_finding(self):
-        assert self.filter.validate_llm_finding("api_key", "sk-proj-abc123XYZ789def456") == True
+        assert self.filter._validate_llm_finding("api_key", "sk-proj-abc123XYZ789def456") == True
         
-        assert self.filter.validate_llm_finding("", "sk-proj-abc123XYZ789def456") == False
+        assert self.filter._validate_llm_finding("", "sk-proj-abc123XYZ789def456") == False
         
-        assert self.filter.validate_llm_finding("api_key", "") == False
-        
-        
-        
-        assert self.filter.validate_llm_finding("config", "val1,val2,val3") == True
+        assert self.filter._validate_llm_finding("api_key", "") == False
         
         
-        assert self.filter.validate_llm_finding("key", "this has way too many spaces in the text") == True
+        
+        assert self.filter._validate_llm_finding("config", "val1,val2,val3") == True
+        
+        
+        assert self.filter._validate_llm_finding("key", "this has way too many spaces in the text") == True
     
     def test_calculate_confidence(self):
         confidence = self.filter.calculate_confidence("api_key", "sk-proj-abc123XYZ789", "api_key")
