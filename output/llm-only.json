@@ -7,45 +7,12 @@
       "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
       "author": "mindPazi",
       "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "config.yaml",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "password_placeholder",
-      "secret_value": "your_password_here",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "config.yaml",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "default_password",
-      "secret_value": "changeme",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
       "file_path": "tests/test_git_handler.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
       "secret_key": "API_KEY",
       "secret_value": "sk-proj-123456",
       "confidence": 1.0
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_git_handler.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "password",
-      "secret_value": "MySecretPassword123",
-      "confidence": 0.1
     },
     {
       "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
@@ -62,23 +29,12 @@
       "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
       "author": "mindPazi",
       "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_git_handler.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "new_secret",
-      "secret_value": "token123",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_git_handler.py",
+      "file_path": "tests/test_heuristics.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
       "secret_key": "api_key",
-      "secret_value": "key456",
-      "confidence": 0.6
+      "secret_value": "sk-proj-abc123XYZ789def456",
+      "confidence": 1.0
     },
     {
       "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
@@ -98,19 +54,8 @@
       "file_path": "tests/test_heuristics.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "api_key_full",
-      "secret_value": "sk-proj-abc123XYZ789def456",
-      "confidence": 1.0
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_heuristics.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "github_token_example",
-      "secret_value": "ghp_abc123XYZ789",
+      "secret_key": "github_token",
+      "secret_value": "ghp_1234567890abcdef",
       "confidence": 1.0
     },
     {
@@ -121,7 +66,7 @@
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
       "secret_key": "github_token",
-      "secret_value": "ghp_1234567890abcdef",
+      "secret_value": "ghp_abc123XYZ789",
       "confidence": 1.0
     },
     {
@@ -143,29 +88,7 @@
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
       "secret_key": "bearer_token",
-      "secret_value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
-      "confidence": 1.0
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "IV",
-      "secret_value": "1234567890123456",
-      "confidence": 0.5
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "FINAL_PASSWORD",
-      "secret_value": "FinalPassword2025!@",
+      "secret_value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9",
       "confidence": 0.9
     },
     {
@@ -208,51 +131,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "staging_key",
-      "secret_value": "staging_test_key_not_real",
-      "confidence": 0.6
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "staging_secret",
-      "secret_value": "staging_demo_secret_value",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "dev_key",
-      "secret_value": "dev_key_example_123",
-      "confidence": 0.9
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "dev_secret",
-      "secret_value": "dev_secret_sample_456",
-      "confidence": 0.9
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "x_api_key",
+      "secret_key": "Key",
       "secret_value": "actual_api_key_x9y8z7w6v5u4t3s2r1q0p9o8",
       "confidence": 1.0
     },
@@ -263,7 +142,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "x_client_secret",
+      "secret_key": "Secret",
       "secret_value": "client_secret_m7n8b9v0c1x2z3a4s5d6f7g8h9j0",
       "confidence": 1.0
     },
@@ -274,7 +153,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "postgres_password",
+      "secret_key": "Postgres_password",
       "secret_value": "PostgresAdmin2025!@#",
       "confidence": 0.9
     },
@@ -285,7 +164,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "mysql_root_password",
+      "secret_key": "MySQL_password",
       "secret_value": "MySQLRoot2025!@#",
       "confidence": 0.9
     },
@@ -307,7 +186,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "actual_password",
+      "secret_key": "printed_password",
       "secret_value": "ActualPassword123!",
       "confidence": 0.1
     },
@@ -329,31 +208,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "test_logging_key",
-      "secret_value": "test_logging_key_not_real",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
       "secret_key": "stripe_key",
       "secret_value": "sk_live_4eC39HqLyjWDarjtT1zdp7dcTYooMQauvdEDq",
       "confidence": 1.0
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "cc_number",
-      "secret_value": "4111111111111111",
-      "confidence": 0.1
     },
     {
       "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
@@ -373,18 +230,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "prod_secret_key",
-      "secret_value": "prod_secret_key_50_characters_long_with_random_",
-      "confidence": 0.9
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "prod_db_password",
+      "secret_key": "ProdDB_password",
       "secret_value": "ProdDBPassword2025!@#",
       "confidence": 0.9
     },
@@ -395,29 +241,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "test_secret_key",
-      "secret_value": "test_secret_key_not_real",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "test_db_password",
-      "secret_value": "test_db_password",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "admin_password_alt",
+      "secret_key": "Admin_password_alt",
       "secret_value": "AdminPassword2025!@#",
       "confidence": 0.9
     },
@@ -439,53 +263,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "test_password",
-      "secret_value": "test_password_123",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "test_api_key",
-      "secret_value": "test_api_key_example",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
       "secret_key": "real_token",
       "secret_value": "real_token_aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW3x",
       "confidence": 1.0
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "test_token",
-      "secret_value": "test_token_not_real_123",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "demo_token",
-      "secret_value": "demo_token_example_456",
-      "confidence": 0.1
     },
     {
       "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
@@ -505,41 +285,8 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "sample_token",
-      "secret_value": "sample_token_for_documentation",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "jwt_token",
-      "secret_value": "jwt.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0",
-      "confidence": 1.0
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "mock_jwt_token",
-      "secret_value": "mock_jwt_token_for_testing",
-      "confidence": 0.1
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_report.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "API_KEY",
-      "secret_value": "sk-123",
+      "secret_key": "FINAL_PASSWORD",
+      "secret_value": "FinalPassword2025!@",
       "confidence": 0.9
     },
     {
@@ -560,31 +307,9 @@
       "file_path": "tests/test_report.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "another_key",
-      "secret_value": "different-value",
-      "confidence": 0.6
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_report.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
       "secret_key": "token",
       "secret_value": "ghp_abc123",
       "confidence": 0.9
-    },
-    {
-      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
-      "author": "mindPazi",
-      "date": "2025-09-28 15:14:08+02:00",
-      "file_path": "tests/test_report.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "test_key",
-      "secret_value": "test123",
-      "confidence": 0.6
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -593,9 +318,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "PRODUCTION_DATABASE_URL",
-      "secret_value": "postgresql://prod_user:SuperSecret123!@db.production.com:5432/maindb",
-      "confidence": 0.1
+      "secret_key": "com",
+      "secret_value": "5432/maindb",
+      "confidence": 0.6
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -637,28 +362,6 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "AWS_ACCESS_KEY_ID",
-      "secret_value": "AKIAIOSFODNN7EXAMPLE",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "AWS_SECRET_ACCESS_KEY",
-      "secret_value": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
-      "confidence": 1.0
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
       "secret_key": "GOOGLE_CLIENT_SECRET",
       "secret_value": "GOCSPX-1234567890abcdefghijklmnop",
       "confidence": 1.0
@@ -682,7 +385,7 @@
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
       "secret_key": "RSA_PRIVATE_KEY",
-      "secret_value": "-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEA1234567890abcdefghijklmnopqrstuvwxyz\\nABCDEFGHIJKLM",
+      "secret_value": "-----BEGIN RSA PRIVATE KEY----- MIIEpAIBAAKCAQEA1234567890abcdefghijklmnopqrstuvwxyz ABCDEFGHIJKLMNO",
       "confidence": 1.0
     },
     {
@@ -692,7 +395,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "ADMIN_PASSWORD",
+      "secret_key": "admin_password",
       "secret_value": "Admin@2025!SuperSecure#Pass",
       "confidence": 0.9
     },
@@ -703,7 +406,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "JWT_SECRET",
+      "secret_key": "jwt_secret",
       "secret_value": "jwt_secret_key_f47ac10b_58cc_4372_a567_0e02b2c3d479",
       "confidence": 0.9
     },
@@ -714,7 +417,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "HARDCODED_ADMIN_CREDENTIAL_PASSWORD",
+      "secret_key": "AUTH_ADMIN_PASSWORD",
       "secret_value": "P@ssw0rd2025!Admin",
       "confidence": 0.9
     },
@@ -725,7 +428,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "MASTER_KEY",
+      "secret_key": "master_key",
       "secret_value": "master_key_9f86d081884c7d659a2feaa0c55ad015a3bf4f1b",
       "confidence": 0.9
     },
@@ -769,7 +472,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "PROD_ENDPOINT_KEY",
+      "secret_key": "PRODUCTION_ENDPOINT_KEY",
       "secret_value": "prod_api_key_aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW3xY5z",
       "confidence": 1.0
     },
@@ -780,7 +483,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "PROD_ENDPOINT_SECRET",
+      "secret_key": "PRODUCTION_ENDPOINT_SECRET",
       "secret_value": "prod_secret_7f4df045_b3a7_4298_9f3e_8c5d6e7f8a9b",
       "confidence": 0.9
     },
@@ -802,7 +505,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "HEADER_X_API_KEY",
+      "secret_key": "Key",
       "secret_value": "actual_api_key_x9y8z7w6v5u4t3s2r1q0p9o8",
       "confidence": 1.0
     },
@@ -813,7 +516,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "HEADER_X_CLIENT_SECRET",
+      "secret_key": "Secret",
       "secret_value": "client_secret_m7n8b9v0c1x2z3a4s5d6f7g8h9j0",
       "confidence": 1.0
     },
@@ -824,9 +527,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "MYSQL_CONN",
-      "secret_value": "mysql://root:MySecurePassword123!@localhost:3306/myapp",
-      "confidence": 0.1
+      "secret_key": "localhost",
+      "secret_value": "3306/myapp",
+      "confidence": 0.6
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -835,9 +538,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "MONGO_CONN",
-      "secret_value": "mongodb://admin:AdminPass456$@cluster0.mongodb.net/mydb",
-      "confidence": 0.8
+      "secret_key": "admin",
+      "secret_value": "AdminPass456$@cluster0.mongodb.net/mydb",
+      "confidence": 0.95
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -846,9 +549,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "REDIS_CONN",
-      "secret_value": "redis://:MyRedisPassword789@redis-server:6379/0",
-      "confidence": 0.8
+      "secret_key": "server",
+      "secret_value": "6379/0",
+      "confidence": 0.5
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -857,7 +560,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "JSON_DB_PASSWORD",
+      "secret_key": "JSON_DATABASE_PASSWORD",
       "secret_value": "ActualDBPassword2025!@#",
       "confidence": 0.9
     },
@@ -868,9 +571,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "JSON_SENDGRID",
+      "secret_key": "JSON_SENDGRID_KEY",
       "secret_value": "SG.real_sendgrid_api_key_with_many_characters",
-      "confidence": 0.8
+      "confidence": 0.9
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -945,7 +648,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "SIGN_JWT_SECRET",
+      "secret_key": "CRYPTO_JWT_SECRET",
       "secret_value": "super_secret_jwt_key_for_signing_tokens_2025",
       "confidence": 0.9
     },
@@ -956,7 +659,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "POSTGRES_ADMIN_PASSWORD",
+      "secret_key": "DB_POSTGRES_PASSWORD",
       "secret_value": "PostgresAdmin2025!@#$",
       "confidence": 0.9
     },
@@ -967,7 +670,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "MYSQL_ROOT_PASSWORD",
+      "secret_key": "DB_MYSQL_PASSWORD",
       "secret_value": "MySQLRoot2025!@#$%",
       "confidence": 0.9
     },
@@ -978,8 +681,19 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "MONGODB_URI",
-      "secret_value": "mongodb://mongouser:MongoPass2025!@mongodb.example.com:27017/appdb",
+      "secret_key": "com",
+      "secret_value": "27017/appdb",
+      "confidence": 0.6
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
+      "secret_key": "user",
+      "secret_value": "Pass123!@localhost/db",
       "confidence": 0.8
     },
     {
@@ -989,8 +703,8 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "CONNSTRING_POSTGRES_LOCAL",
-      "secret_value": "postgresql://user:Pass123!@localhost/db",
+      "secret_key": "admin",
+      "secret_value": "AdminPass456$@mysql-server/appdb",
       "confidence": 0.8
     },
     {
@@ -1000,31 +714,20 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "CONNSTRING_MYSQL_ADMIN",
-      "secret_value": "mysql://admin:AdminPass456$@mysql-server/appdb",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "CONNSTRING_REDIS",
-      "secret_value": "redis://:RedisPassword789@redis-cluster:6379/0",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "PROD_HARDCODED_PASSWORD",
+      "secret_key": "PROD_CONNECT_PASSWORD",
       "secret_value": "ProdPassword2025!@#$%^&*",
       "confidence": 0.9
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
+      "secret_key": "STRIPE_SECRET_KEY_THIRD_PARTY",
+      "secret_value": "sk_live_51HqmkK2eZvKYlo2C0123456789abcdefghijklmnop",
+      "confidence": 1.0
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -1066,6 +769,17 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
+      "secret_key": "GCP_SERVICE_ACCOUNT_PRIVATE_KEY",
+      "secret_value": "-----BEGIN PRIVATE KEY-----\\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAQC12345\\n-----END PRIV",
+      "confidence": 1.0
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
       "secret_key": "TWILIO_ACCOUNT_SID",
       "secret_value": "ACa1234567890abcdef1234567890abcd",
       "confidence": 0.8
@@ -1077,8 +791,52 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
+      "secret_key": "TWILIO_AUTH_TOKEN_THIRD_PARTY",
+      "secret_value": "auth_token_32_characters_long_12345",
+      "confidence": 0.9
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
+      "secret_key": "SENDGRID_API_KEY_THIRD_PARTY",
+      "secret_value": "SG.actualSendGridAPIKeyWithManyChars1234567890",
+      "confidence": 1.0
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
       "secret_key": "MAILCHIMP_API_KEY",
       "secret_value": "abcdef1234567890abcdef1234567890-us1",
+      "confidence": 0.9
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
+      "secret_key": "TWITTER_API_KEY",
+      "secret_value": "twitter_api_key_25_chars_long_12345",
+      "confidence": 0.9
+    },
+    {
+      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
+      "author": "mindPazi",
+      "date": "2025-09-28 03:54:16+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_detected_secret",
+      "model": "gpt-5-mini",
+      "secret_key": "TWITTER_API_SECRET",
+      "secret_value": "twitter_api_secret_50_characters_long_1234567890abc",
       "confidence": 0.9
     },
     {
@@ -1143,28 +901,6 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "TWITTER_API_KEY",
-      "secret_value": "twitter_api_key_25_chars_long_12345",
-      "confidence": 0.9
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "TWITTER_API_SECRET",
-      "secret_value": "twitter_api_secret_50_characters_long_1234567890abc",
-      "confidence": 0.9
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
       "secret_key": "DEBUG_PRINT_PASSWORD",
       "secret_value": "ActualPassword123!",
       "confidence": 0.1
@@ -1177,8 +913,8 @@
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
       "secret_key": "LOGGING_API_KEY",
-      "secret_value": "logging_api_key_abc123def456ghi789",
-      "confidence": 0.9
+      "secret_value": "logging_api_key_abc123def456ghi789jkl",
+      "confidence": 1.0
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -1198,7 +934,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "SQL_HARDCODED_PASSWORD",
+      "secret_key": "SQL_EMBEDDED_PASSWORD",
       "secret_value": "HardcodedPass2025!",
       "confidence": 0.9
     },
@@ -1209,7 +945,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "CONNECTION_STRING_MYPASS",
+      "secret_key": "DB_CONNECTION_STRING_WITH_PWD",
       "secret_value": "Server=myServer;Database=myDB;User Id=sa;Password=MyPass@word1;",
       "confidence": 0.8
     },
@@ -1220,20 +956,9 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "ENV_DATABASE_URL",
-      "secret_value": "postgresql://prod_user:ProdPassword2025!@db.example.com:5432/proddb",
-      "confidence": 0.95
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "ENV_REDIS_URL",
-      "secret_value": "redis://:RedisPass2025!@redis.example.com:6379/0",
-      "confidence": 0.8
+      "secret_key": "com",
+      "secret_value": "5432/proddb",
+      "confidence": 0.6
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
@@ -1275,7 +1000,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "PROCESS_PAYMENT_STRIPE_KEY",
+      "secret_key": "PAYMENT_STRIPE_KEY_IN_FUNC",
       "secret_value": "sk_live_4eC39HqLyjWDarjtT1zdp7dcTYooMQauvdEDq",
       "confidence": 1.0
     },
@@ -1319,7 +1044,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "CONFIG_ADMIN_PASSWORD",
+      "secret_key": "ADMIN_CREDENTIAL_PASSWORD",
       "secret_value": "AdminPassword2025!@#$",
       "confidence": 0.9
     },
@@ -1330,7 +1055,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "CONFIG_ADMIN_API_KEY",
+      "secret_key": "ADMIN_API_KEY",
       "secret_value": "admin_api_key_abc123def456ghi789jkl012",
       "confidence": 1.0
     },
@@ -1341,7 +1066,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "TOKENS_REAL_TOKEN",
+      "secret_key": "TOKENS_LIST_REAL_TOKEN",
       "secret_value": "real_token_aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW3x",
       "confidence": 1.0
     },
@@ -1352,7 +1077,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "TOKENS_ACTUAL_PRODUCTION_TOKEN",
+      "secret_key": "TOKENS_LIST_PROD_TOKEN",
       "secret_value": "actual_production_token_with_high_entropy_xyz789",
       "confidence": 0.9
     },
@@ -1363,7 +1088,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "TOKENS_JWT",
+      "secret_key": "TOKENS_LIST_JWT",
       "secret_value": "jwt.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0",
       "confidence": 1.0
     },
@@ -1374,7 +1099,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "GET_PASSWORD_PROD",
+      "secret_key": "LAMBDA_PROD_PASSWORD",
       "secret_value": "ProdPass2025!",
       "confidence": 0.7
     },
@@ -1385,7 +1110,7 @@
       "file_path": "tests/test_large_codebase.py",
       "finding_type": "llm_detected_secret",
       "model": "gpt-5-mini",
-      "secret_key": "GET_API_KEY_LAMBDA",
+      "secret_key": "LAMBDA_API_KEY",
       "secret_value": "real_api_key_aB3dE5fG7hI9jK1lM3nO5pQ7rS9t",
       "confidence": 1.0
     },
@@ -1421,116 +1146,356 @@
       "secret_key": "FINAL_TOKEN",
       "secret_value": "final_bearer_token_with_sufficient_length_and_entropy",
       "confidence": 0.8
+    }
+  ],
+  "llm_low_confidence_secrets": [
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_git_handler.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "password",
+      "secret_value": "MySecretPassword123",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_git_handler.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "new_secret",
+      "secret_value": "token123",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_git_handler.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "api_key",
+      "secret_value": "key456",
+      "confidence": 0.6,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_heuristics.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "weak_secret",
+      "secret_value": "aaaaaaaa",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "staging_key",
+      "secret_value": "staging_test_key_not_real",
+      "confidence": 0.6,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "staging_secret",
+      "secret_value": "staging_demo_secret_value",
+      "confidence": 0.8,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "dev_key",
+      "secret_value": "dev_key_example_123",
+      "confidence": 0.9,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "dev_secret",
+      "secret_value": "dev_secret_sample_456",
+      "confidence": 0.9,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "IV",
+      "secret_value": "1234567890123456",
+      "confidence": 0.5,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_logging_key",
+      "secret_value": "test_logging_key_not_real",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "cc_number",
+      "secret_value": "4111111111111111",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "prod_secret_key",
+      "secret_value": "prod_secret_key_50_characters_long_with_random_",
+      "confidence": 0.9,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_secret_key",
+      "secret_value": "test_secret_key_not_real",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_db_password",
+      "secret_value": "test_db_password",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_password",
+      "secret_value": "test_password_123",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_api_key",
+      "secret_value": "test_api_key_example",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_token",
+      "secret_value": "test_token_not_real_123",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "demo_token",
+      "secret_value": "demo_token_example_456",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "sample_token",
+      "secret_value": "sample_token_for_documentation",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "jwt_token",
+      "secret_value": "jwt.eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0",
+      "confidence": 1.0,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_large_codebase.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "mock_jwt_token",
+      "secret_value": "mock_jwt_token_for_testing",
+      "confidence": 0.1,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_report.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "another_key",
+      "secret_value": "different-value",
+      "confidence": 0.6,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_report.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "API_KEY",
+      "secret_value": "sk-123",
+      "confidence": 0.9,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_report.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "test_key",
+      "secret_value": "test123",
+      "confidence": 0.6,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_report.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "key1",
+      "secret_value": "value1",
+      "confidence": 0.6,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+    },
+    {
+      "commit_hash": "0d388848329ea4b08d05892caae0ddc4a05af4fd",
+      "author": "mindPazi",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "tests/test_report.py",
+      "finding_type": "llm_low_confidence",
+      "model": "gpt-5-mini",
+      "secret_key": "key2",
+      "secret_value": "value2",
+      "confidence": 0.6,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
       "author": "mindPazi",
       "date": "2025-09-28 03:54:16+02:00",
       "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
+      "finding_type": "llm_low_confidence",
       "model": "gpt-5-mini",
-      "secret_key": "postgresql",
-      "secret_value": "//prod_user:SuperSecret123!@db.production.com:5432/maindb",
-      "confidence": 0.1
+      "secret_key": "AWS_ACCESS_KEY_ID",
+      "secret_value": "AKIAIOSFODNN7EXAMPLE",
+      "confidence": 0.8,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
       "author": "mindPazi",
       "date": "2025-09-28 03:54:16+02:00",
       "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
+      "finding_type": "llm_low_confidence",
       "model": "gpt-5-mini",
-      "secret_key": "mysql",
-      "secret_value": "//root:MySecurePassword123!@localhost:3306/myapp",
-      "confidence": 0.1
+      "secret_key": "AWS_SECRET_ACCESS_KEY",
+      "secret_value": "wJalrXUtnFEMI/K7MDENG/bPxRfiCYEXAMPLEKEY",
+      "confidence": 1.0,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     },
     {
       "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
       "author": "mindPazi",
       "date": "2025-09-28 03:54:16+02:00",
       "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
+      "finding_type": "llm_low_confidence",
       "model": "gpt-5-mini",
-      "secret_key": "mongodb",
-      "secret_value": "//admin:AdminPass456$@cluster0.mongodb.net/mydb",
-      "confidence": 0.95
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "redis",
-      "secret_value": "//:MyRedisPassword789@redis-server:6379/0",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "mongodb",
-      "secret_value": "//mongouser:MongoPass2025!@mongodb.example.com:27017/appdb",
-      "confidence": 0.95
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "postgresql",
-      "secret_value": "//user:Pass123!@localhost/db",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "mysql",
-      "secret_value": "//admin:AdminPass456$@mysql-server/appdb",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "redis",
-      "secret_value": "//:RedisPassword789@redis-cluster:6379/0",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "postgresql",
-      "secret_value": "//prod_user:ProdPassword2025!@db.example.com:5432/proddb",
-      "confidence": 0.8
-    },
-    {
-      "commit_hash": "483eb04fa114fd9b331e60cc31158aed63ce65ae",
-      "author": "mindPazi",
-      "date": "2025-09-28 03:54:16+02:00",
-      "file_path": "tests/test_large_codebase.py",
-      "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "redis",
-      "secret_value": "//:RedisPass2025!@redis.example.com:6379/0",
-      "confidence": 0.95
+      "secret_key": "GOOGLE_ANALYTICS_KEY",
+      "secret_value": "UA-123456789-1",
+      "confidence": 0.9,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     }
   ]
 }

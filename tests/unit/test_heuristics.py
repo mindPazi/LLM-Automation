@@ -64,24 +64,26 @@ class TestHeuristicFilter:
         assert confidence == 0.7
     
     def test_adjust_confidence_with_heuristics(self):
-        initial = 0.8
+        
         adjusted, should_filter = self.filter.adjust_confidence_with_heuristics(
-            initial, "secret", "test"
+            "secret", "test"
         )
-        assert adjusted < initial
+        assert adjusted < 0.5  
         assert should_filter == True
         
-        initial = 0.5
-        adjusted, should_filter = self.filter.adjust_confidence_with_heuristics(
-            initial, "github_token", "ghp_abc123XYZ789"
-        )
-        assert adjusted >= initial
         
-        initial = 0.6
         adjusted, should_filter = self.filter.adjust_confidence_with_heuristics(
-            initial, "key", "aaaaaaaa"
+            "github_token", "ghp_abc123XYZ789"
         )
-        assert adjusted < initial
+        assert adjusted >= 0.5  
+        assert should_filter == False
+        
+        
+        adjusted, should_filter = self.filter.adjust_confidence_with_heuristics(
+            "key", "aaaaaaaa"
+        )
+        assert adjusted < 0.5  
+        assert should_filter == True
     
     def test_apply_regex_filters(self):
         content = """

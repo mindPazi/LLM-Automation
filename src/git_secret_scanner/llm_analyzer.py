@@ -42,82 +42,68 @@ class LLMAnalyzer:
         seen_findings = set()
         
         
+        confidence_pattern = r'([A-Za-z_]+[A-Za-z0-9_]*)\s*:\s*([^:\n]+?)\s*:\s*(0(?:\.\d+)?|0\.25|0\.75|1(?:\.0)?)'
+        confidence_matches = re.findall(confidence_pattern, llm_response)
         
-        json_pattern = r'([A-Za-z_]+[A-Z_]*[A-Za-z_]*)\s*:\s*(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})'
-        json_matches = re.findall(json_pattern, llm_response, re.DOTALL)
-        
-        for key, json_str in json_matches:
+        for key, value, confidence_str in confidence_matches:
+            value = value.strip().strip('"\'')
+            
+            
+            if len(value) <= 5 or value.startswith("***") or value == "hidden":
+                continue
+                
+            
             try:
+                confidence = float(confidence_str)
                 
-                json_data = json.loads(json_str)
+                if confidence <= 0.125:
+                    confidence = 0.0
+                elif confidence <= 0.5:
+                    confidence = 0.25
+                elif confidence <= 0.875:
+                    confidence = 0.75
+                else:
+                    confidence = 1.0
+            except ValueError:
+                confidence = 0.25  
+            
+            unique_id = f"{key.lower()}:{value[:50]}"
+            if unique_id not in seen_findings:
+                seen_findings.add(unique_id)
+                findings.append({
+                    'key': key,
+                    'value': value[:100],
+                    'type': 'llm_detected_secret',
+                    'confidence': confidence
+                })
+                logger.debug(f"Extracted {key} with confidence {confidence}")
+        
+        
+        if not findings:
+            simple_pattern = r'([A-Za-z_]+[A-Za-z0-9_]*)\s*:\s*([^:\n]+?)(?:\n|$)'
+            simple_matches = re.findall(simple_pattern, llm_response)
+            
+            for key, value in simple_matches:
+                value = value.strip().strip('"\'')
                 
                 
-                sensitive_fields = ['private_key', 'password', 'secret', 'token', 'api_key', 
-                                   'client_secret', 'access_token', 'refresh_token']
+                if len(value) <= 5 or value.startswith("***") or value == "hidden":
+                    continue
+                    
                 
-                for field in sensitive_fields:
-                    if field in json_data and json_data[field]:
-                        field_value = str(json_data[field])
-                        if len(field_value) > 5:
-                            unique_id = f"{key}_{field}:{field_value[:50]}"
-                            if unique_id not in seen_findings:
-                                seen_findings.add(unique_id)
-                                findings.append({
-                                    'key': f"{key}_{field}",
-                                    'value': field_value[:100],
-                                    'type': 'llm_detected_secret'
-                                })
-                                logger.debug(f"Extracted {field} from JSON for key {key}")
+                if re.match(r'^\s*(0(?:\.\d+)?|0\.25|0\.75|1(?:\.0)?)\s*$', value):
+                    continue
                 
-                
-                if not any(field in json_data for field in sensitive_fields):
-                    unique_id = f"{key}:{json_str[:50]}"
-                    if unique_id not in seen_findings:
-                        seen_findings.add(unique_id)
-                        findings.append({
-                            'key': key,
-                            'value': json_str[:100],
-                            'type': 'llm_detected_secret'
-                        })
-            except json.JSONDecodeError:
-                
-                logger.debug(f"Could not parse as JSON for key {key}, treating as string")
-                unique_id = f"{key}:{json_str[:50]}"
-                if unique_id not in seen_findings and len(json_str) > 5:
+                unique_id = f"{key.lower()}:{value[:50]}"
+                if unique_id not in seen_findings:
                     seen_findings.add(unique_id)
                     findings.append({
                         'key': key,
-                        'value': json_str[:100],
-                        'type': 'llm_detected_secret'
+                        'value': value[:100],
+                        'type': 'llm_detected_secret',
+                        'confidence': 0.75  
                     })
-        
-        
-        patterns = [
-            r'([A-Z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',
-            r'([a-z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',
-            r'([A-Za-z_]+[Kk]ey|[Tt]oken|[Pp]assword|[Ss]ecret|[Cc]redential)\s*:\s*["\']?([^"\'\n]+)["\']?'
-        ]
-        
-        for pattern in patterns:
-            matches = re.findall(pattern, llm_response)
-            for match in matches:
-                key = match[0]
-                value = match[1] if len(match) > 1 else match[0]
-                
-                
-                if value.strip().startswith('{'):
-                    continue
-                
-                if len(value) > 5 and not value.startswith("***") and not value == "hidden":
-                    unique_id = f"{key.lower()}:{value}"
-                    
-                    if unique_id not in seen_findings:
-                        seen_findings.add(unique_id)
-                        findings.append({
-                            'key': key,
-                            'value': value[:100],
-                            'type': 'llm_detected_secret'
-                        })
+                    logger.debug(f"Extracted {key} with default confidence 0.75")
         
         if re.search(r'no\s+(secrets?|issues?|problems?)\s+found', llm_response, re.IGNORECASE):
             logger.debug("LLM explicitly stated no secrets found")
@@ -137,11 +123,21 @@ class LLMAnalyzer:
 {diff_content}
 
 Return format:
-KEY : VALUE
+KEY : VALUE : CONFIDENCE
 
-Example:
-database_password : mySecretPassword123
-api_key : sk-1234567890abcdef"""
+Where CONFIDENCE must be one of these values:
+- 0 = Definitely a false positive (test data, placeholder, example)
+- 0.25 = Probably a false positive (low entropy, common pattern)
+- 0.75 = Probably a real secret (high entropy, looks authentic)
+- 1.0 = Definitely a real secret (matches known patterns, very high entropy)
+
+Examples:
+database_password : mySecretPassword123 : 0.75
+api_key : sk-1234567890abcdef : 1.0
+test_token : test-token-123 : 0
+example_key : your-api-key-here : 0.25
+
+If no secrets found, respond with "No secrets found"."""
         
         try:
             logger.debug(f"Sending request to {self.model_name}")
@@ -204,7 +200,7 @@ Commit message:
         return findings
     
     def _process_llm_secrets(self, llm_secrets: List[Dict[str, Any]], 
-                                            heuristic_filter: Any, commit: git.Commit,
+                                            commit: git.Commit,
                                             file_path: str, report_generator: Any, 
                                             model_name: str) -> int:
         unique_count = 0
@@ -212,15 +208,11 @@ Commit message:
         duplicate_count = 0
         
         for secret in llm_secrets:
-            confidence = heuristic_filter.calculate_confidence(
-                secret['key'], 
-                secret['value'], 
-                secret.get('type')
-            )
-            secret['confidence'] = round(confidence, 2)
+            
+            confidence = secret.get('confidence', 0.75)  
             
             if confidence < 0.5:
-                secret['filtered_reason'] = f'Confidence too low: {confidence:.2f} < 0.5'
+                secret['filtered_reason'] = f'LLM confidence too low: {confidence:.2f} < 0.5'
                 result = report_generator.add_llm_finding(commit, file_path, secret, model_name, category='low_confidence')
                 if result:
                     low_confidence_count += 1
@@ -244,9 +236,8 @@ Commit message:
         llm_secrets = self.analyze_lines(added_lines)
         
         if llm_secrets:
-            heuristic_filter = HeuristicFilter()
             return self._process_llm_secrets(
-                llm_secrets, heuristic_filter, commit, file_path, 
+                llm_secrets, commit, file_path, 
                 report_generator, model_name
             )
         else:
@@ -273,25 +264,33 @@ Commit message:
         false_positives = []
         
         for secret in unique_secrets:
-            initial_confidence = heuristic_filter.calculate_confidence(
-                secret['key'], 
-                secret['value'], 
-                secret.get('type')
-            )
             
-            adjusted_confidence, should_filter = heuristic_filter.adjust_confidence_with_heuristics(
-                initial_confidence, 
-                secret['key'], 
-                secret['value']
-            )
+            llm_confidence = secret.get('confidence', 0.75)
             
-            secret['adjusted_confidence'] = round(adjusted_confidence, 2)
             
-            if should_filter:
-                secret['filtered_reason'] = f'Confidence too low: {adjusted_confidence:.2f} < 0.5'
-                false_positives.append(secret)
+            if llm_confidence >= 0.5:
+                
+                heuristic_confidence = heuristic_filter.calculate_confidence(
+                    secret['key'], 
+                    secret['value'], 
+                    secret.get('type')
+                )
+                
+                
+                
+                final_confidence = (llm_confidence * 0.7) + (heuristic_confidence * 0.3)
+                secret['adjusted_confidence'] = round(final_confidence, 2)
+                
+                if final_confidence >= 0.5:
+                    validated_secrets.append(secret)
+                else:
+                    secret['filtered_reason'] = f'Combined confidence too low: {final_confidence:.2f} < 0.5'
+                    false_positives.append(secret)
             else:
-                validated_secrets.append(secret)
+                
+                secret['adjusted_confidence'] = llm_confidence
+                secret['filtered_reason'] = f'LLM confidence too low: {llm_confidence:.2f} < 0.5'
+                false_positives.append(secret)
         
         actually_added = 0
         for secret in validated_secrets:
@@ -320,7 +319,7 @@ Commit message:
         
         if llm_secrets:
             unique_count = self._process_llm_secrets(
-                llm_secrets, heuristic_filter, commit, file_path, 
+                llm_secrets, commit, file_path, 
                 report_generator, model_name
             )
             return unique_count
