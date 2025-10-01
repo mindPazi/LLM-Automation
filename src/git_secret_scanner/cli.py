@@ -116,6 +116,11 @@ def main() -> int:
                     logger.debug(f"Skipping config.yaml file: {file_path}")
                     continue
                 
+                
+                if 'tests/unit/' in file_path or file_path.startswith('unit/'):
+                    logger.debug(f"Skipping unit test file: {file_path}")
+                    continue
+                
                 if len(change['added_lines']) == 0:
                     logger.debug(f"No added lines in file: {file_path}")
                     continue
@@ -155,6 +160,8 @@ def main() -> int:
                 logger.info(f"No processable files with changes in commit {commit.hexsha[:8]}")
             elif secrets_found_in_commit == 0:
                 logger.info(f"No secrets found in commit {commit.hexsha[:8]} ({files_processed} files processed)")
+            else:
+                logger.info(f"Found {secrets_found_in_commit} potential secrets in commit {commit.hexsha[:8]} ({files_processed} files processed)")
         
         logger.debug("Saving report")
         report_generator.save_current_report(args.repo, args.mode, len(commits), args.out)

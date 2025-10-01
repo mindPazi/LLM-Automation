@@ -249,6 +249,7 @@ file_filters:
   # File paths to ignore
   ignore_paths:
     - "output"
+    - "tests/unit"
   
   # Specific filenames to ignore
   ignore_files:

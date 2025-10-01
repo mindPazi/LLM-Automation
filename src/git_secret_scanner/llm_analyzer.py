@@ -1,5 +1,6 @@
 import os
 import re
+import json
 from typing import Optional, List, Dict, Any
 import git
 from openai import OpenAI
@@ -37,19 +38,75 @@ class LLMAnalyzer:
             logger.debug("No response or error in LLM response")
             return findings
         
+        seen_findings = set()
+        
+        
+        
+        json_pattern = r'([A-Za-z_]+[A-Z_]*[A-Za-z_]*)\s*:\s*(\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})'
+        json_matches = re.findall(json_pattern, llm_response, re.DOTALL)
+        
+        for key, json_str in json_matches:
+            try:
+                
+                json_data = json.loads(json_str)
+                
+                
+                sensitive_fields = ['private_key', 'password', 'secret', 'token', 'api_key', 
+                                   'client_secret', 'access_token', 'refresh_token']
+                
+                for field in sensitive_fields:
+                    if field in json_data and json_data[field]:
+                        field_value = str(json_data[field])
+                        if len(field_value) > 5:
+                            unique_id = f"{key}_{field}:{field_value[:50]}"
+                            if unique_id not in seen_findings:
+                                seen_findings.add(unique_id)
+                                findings.append({
+                                    'key': f"{key}_{field}",
+                                    'value': field_value[:100],
+                                    'type': 'llm_detected_secret'
+                                })
+                                logger.debug(f"Extracted {field} from JSON for key {key}")
+                
+                
+                if not any(field in json_data for field in sensitive_fields):
+                    json_str_short = json_str[:100]
+                    unique_id = f"{key}:{json_str_short[:50]}"
+                    if unique_id not in seen_findings:
+                        seen_findings.add(unique_id)
+                        findings.append({
+                            'key': key,
+                            'value': json_str_short,
+                            'type': 'llm_detected_secret'
+                        })
+            except json.JSONDecodeError:
+                
+                logger.debug(f"Could not parse as JSON for key {key}, treating as string")
+                unique_id = f"{key}:{json_str[:50]}"
+                if unique_id not in seen_findings and len(json_str) > 5:
+                    seen_findings.add(unique_id)
+                    findings.append({
+                        'key': key,
+                        'value': json_str[:100],
+                        'type': 'llm_detected_secret'
+                    })
+        
+        
         patterns = [
             r'([A-Z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',
             r'([a-z_]+)\s*:\s*["\']?([^"\'\n]+)["\']?',
             r'([A-Za-z_]+[Kk]ey|[Tt]oken|[Pp]assword|[Ss]ecret|[Cc]redential)\s*:\s*["\']?([^"\'\n]+)["\']?'
         ]
         
-        seen_findings = set()
-        
         for pattern in patterns:
             matches = re.findall(pattern, llm_response)
             for match in matches:
                 key = match[0]
                 value = match[1] if len(match) > 1 else match[0]
+                
+                
+                if value.strip().startswith('{'):
+                    continue
                 
                 if len(value) > 5 and not value.startswith("***") and not value == "hidden":
                     unique_id = f"{key.lower()}:{value}"
