@@ -77,7 +77,7 @@ python -m src.git_secret_scanner.cli \
   - `heuristic-only`: Uses only heuristic patterns (no API key required)
   - `llm-fallback`: Uses LLM first, falls back to heuristics if no secrets found
   - `llm-validated`: Uses heuristics to filter LLM false positives
-- `--model MODEL`: LLM model name (default: 'gpt-4o-mini')
+- `--model MODEL`: LLM model name (default: 'gpt-5-mini')
 - `--log-level LEVEL`: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL, default: INFO)
 - `--log-file FILE`: Log file path (optional, logs to console by default)
 
@@ -105,7 +105,16 @@ python -m src.git_secret_scanner.cli \
 
 ## Report Structure
 
-The generated JSON report contains:
+The generated JSON report contains findings with different structures depending on the detection method:
+
+### LLM-detected secrets:
+- Include `model` field and calculated `confidence`
+- No line-specific information since LLM analyzes content contextually
+
+### Heuristic-detected secrets:
+- Include `line_number`, `snippet`, `pattern`, and `entropy` fields
+- More granular information about where and how the secret was found
+
 ```json
 {
   "repository": ".",
@@ -118,24 +127,38 @@ The generated JSON report contains:
       "date": "2025-09-28 15:14:08+02:00",
       "file_path": "config/settings.py",
       "finding_type": "llm_detected_secret",
-      "model": "gpt-4o-mini",
+      "model": "gpt-5-mini",
       "secret_key": "api_key",
-      "secret_value": "sk-1234567890abcdef",
-      "confidence": 1.0
+      "secret_value": "sk-proj-1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z",
+      "confidence": 0.95
+    },
+    {
+      "commit_hash": "def456...",
+      "author": "Author Name",
+      "date": "2025-09-28 15:14:08+02:00",
+      "file_path": "src/example.py",
+      "line_number": 25,
+      "snippet": "DATABASE_PASSWORD = \"P@ssw0rd!2024#DB\"",
+      "finding_type": "heuristic_detected_secret",
+      "pattern": "password",
+      "secret_key": "DATABASE_PASSWORD",
+      "secret_value": "P@ssw0rd!2024#DB",
+      "entropy": 4.2,
+      "confidence": 0.78
     }
   ],
   "llm_low_confidence_secrets": [
     {
-      "commit_hash": "def456...",
+      "commit_hash": "ghi789...",
       "author": "Author Name", 
       "date": "2025-09-28 15:14:08+02:00",
       "file_path": "test_file.py",
       "finding_type": "llm_low_confidence",
-      "model": "gpt-4o-mini",
-      "secret_key": "test_password",
-      "secret_value": "test_password_123",
-      "confidence": 0.1,
-      "filtered_reason": "Confidence too low: 0.10 < 0.5"
+      "model": "gpt-5-mini",
+      "secret_key": "password",
+      "secret_value": "password123",
+      "confidence": 0.25,
+      "filtered_reason": "Confidence too low: 0.25 < 0.5"
     }
   ]
 }
@@ -191,7 +214,7 @@ python -m pytest tests/integration/    # Integration tests
 # Run individual test files
 python -m pytest tests/integration/test_cli_end_to_end.py        # CLI end-to-end tests
 python -m pytest tests/integration/test_scan_modes.py           # Scan mode integration tests
-python -m pytest tests/integration/test_real_git_integration.py # Git integration tests
+python -m pytest tests/integration/test_git.py                 # Git integration tests
 python -m pytest tests/integration/test_large_codebase.py       # Large dataset tests
 ```
 
