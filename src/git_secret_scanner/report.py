@@ -210,11 +210,6 @@ class ReportGenerator:
             logger.info(f"  └ Heuristic detected: {heuristic_secrets_count} unique secret(s)")
             if self.heuristic_duplicates_count > 0:
                 logger.info(f"  └ Duplicates filtered: {self.heuristic_duplicates_count}")
-        elif scan_mode == 'llm-fallback':
-            logger.info(f"  └ LLM detected: {llm_secrets_count} unique secret(s)")
-            logger.info(f"  └ Heuristic fallback detected: {heuristic_fallback_count} additional secret(s)")
-            if self.duplicates_count > 0:
-                logger.info(f"  └ Total duplicates filtered: {self.duplicates_count}")
         elif scan_mode == 'llm-validated':
             logger.info(f"  └ LLM validated secrets: {llm_validated_count} unique secret(s)")
             if self.llm_duplicates_count > 0:
@@ -223,7 +218,7 @@ class ReportGenerator:
     def print_current_summary(self, scan_mode: str) -> None:
         self.print_summary(self.findings, scan_mode)
         
-        if scan_mode in ['llm-only', 'llm-fallback'] and self.llm_low_confidence:
+        if scan_mode == 'llm-only' and self.llm_low_confidence:
             logger.info(f"  └ LLM low confidence secrets filtered: {len(self.llm_low_confidence)}")
         
         if scan_mode == 'heuristic-only' and self.heuristic_low_confidence:

@@ -62,7 +62,7 @@ class ConfigLoader:
             },
             'cli': {
                 'default_output': 'report.json',
-                'default_mode': 'llm-fallback',
+                'default_mode': 'llm-validated',
                 'default_repo': '.'
             }
         }

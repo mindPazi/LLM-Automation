@@ -7,7 +7,7 @@ A comprehensive tool to scan Git repositories for potential secrets or sensitive
 This project provides a CLI tool that analyzes Git repository commits to detect potential secrets or sensitive information using multiple detection methods including Large Language Models (LLM) and heuristic pattern matching.
 
 Currently implements:
-- **Multiple Scan Modes**: LLM-only, heuristic-only, LLM-fallback, and LLM-validated scanning
+- **Multiple Scan Modes**: LLM-only, heuristic-only, and LLM-validated scanning
 - **Advanced Pattern Recognition**: Regex-based heuristic filters with entropy analysis and confidence scoring
 - **LLM Integration**: OpenAI GPT model integration for sophisticated secret detection
 - **JSON Structure Support**: Enhanced detection for multiline secrets and JSON-embedded credentials
@@ -34,7 +34,7 @@ export OPENAI_API_KEY="your-api-key-here"
 ### Basic Usage
 
 ```bash
-# Scan last 5 commits using LLM-fallback mode (default)
+# Scan last 5 commits using LLM-validated mode (default)
 python -m src.git_secret_scanner.cli --last 5
 
 # Scan a specific commit range
@@ -72,10 +72,9 @@ python -m src.git_secret_scanner.cli \
 - `--repo PATH`: Path to the Git repository (default: '.')
 - `--to COMMIT`: End commit (hash or reference, used with --from)
 - `--out FILE`: Output file for the JSON report (default: 'report.json')
-- `--mode MODE`: Scan mode (default: 'llm-fallback')
+- `--mode MODE`: Scan mode (default: 'llm-validated')
   - `llm-only`: Uses only LLM for detection
   - `heuristic-only`: Uses only heuristic patterns (no API key required)
-  - `llm-fallback`: Uses LLM first, falls back to heuristics if no secrets found
   - `llm-validated`: Uses heuristics to filter LLM false positives
 - `--model MODEL`: LLM model name (default: 'gpt-5-mini')
 - `--log-level LEVEL`: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL, default: INFO)
@@ -93,12 +92,7 @@ python -m src.git_secret_scanner.cli \
 - No API key required, fastest execution
 - Best for: Quick scans, CI/CD pipelines, or when API access is unavailable
 
-### 3. LLM-Fallback Mode (`--mode llm-fallback`) - **Default**
-- Tries LLM first, uses heuristics if LLM finds nothing
-- Balanced approach between accuracy and coverage
-- Best for: General-purpose scanning
-
-### 4. LLM-Validated Mode (`--mode llm-validated`)
+### 3. LLM-Validated Mode (`--mode llm-validated`) - **Default**
 - Uses heuristics to pre-filter, then LLM validates findings
 - Reduces false positives while maintaining high accuracy
 - Best for: High-confidence results with minimal false positives
@@ -118,7 +112,7 @@ The generated JSON report contains findings with different structures depending 
 ```json
 {
   "repository": ".",
-  "scan_mode": "llm-fallback",
+  "scan_mode": "llm-validated",
   "commits_scanned": 3,
   "findings": [
     {

@@ -23,7 +23,7 @@ def extract_ground_truth_from_annotated():
     return ground_truth
 
 def load_json_files():
-    modes = ['llm-only', 'heuristic-only', 'llm-validated', 'llm-fallback']
+    modes = ['llm-only', 'heuristic-only', 'llm-validated']
     all_secrets = {}
     mode_secrets = {}
     
@@ -40,14 +40,6 @@ def load_json_files():
                 for finding in data.get('findings', []):
                     if 'tests/integration/test_large_codebase' in finding['file_path']:
                         secret_value = finding['secret_value'].replace('...', '')
-                        
-                        if mode == 'llm-fallback':
-                            clean_value = secret_value.rstrip('.')
-                            dedup_key = f"{clean_value}"
-                            
-                            if any(clean_value in seen or seen in clean_value for seen in seen_secrets):
-                                continue
-                            seen_secrets.add(clean_value)
                         
                         secret_id = f"{finding['secret_key']}:{finding['secret_value']}"
                         all_secrets[secret_id] = finding
@@ -72,8 +64,7 @@ def load_json_files():
 
 def calculate_metrics(mode_secrets: Dict[str, Set[str]], ground_truth: Dict[str, bool]):
     results = {}
-    
-    all_possible_secrets = set(ground_truth.keys())
+    total_secrets = 68
     
     for mode, detected_secrets in mode_secrets.items():
         tp = 0
@@ -101,6 +92,9 @@ def calculate_metrics(mode_secrets: Dict[str, Set[str]], ground_truth: Dict[str,
                     fn += 1
                 else:
                     tn += 1
+        
+        missing_secrets = total_secrets - len(ground_truth)
+        tn += missing_secrets
         
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0

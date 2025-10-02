@@ -17,8 +17,8 @@ def main() -> int:
     parser.add_argument('--to', dest='to_commit', type=str, help='End commit (hash or reference, optional)')
     parser.add_argument('--last', type=int, help='Scan last n commits (alternative to --from/--to)')
     parser.add_argument('--out', type=str, default=config.get('cli', 'default_output', default='report.json'), help='Output file')
-    parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-fallback', 'llm-validated'], 
-                       default=config.get('cli', 'default_mode', default='llm-fallback'), help='Scan mode: llm-only, heuristic-only, llm-fallback, or llm-validated (uses heuristics to filter LLM false positives)')
+    parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-validated'],
+                       default=config.get('cli', 'default_mode', default='llm-validated'), help='Scan mode: llm-only, heuristic-only, or llm-validated (uses heuristics to filter LLM false positives)')
     parser.add_argument('--model', type=str, default=config.get('llm', 'default_model', default='gpt-5-mini'), help='Model name')
     parser.add_argument('--log-level', type=str, default='INFO', 
                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
@@ -55,7 +55,7 @@ def main() -> int:
             commits = handler.get_commits_range(args.from_commit, args.to_commit)
         
         llm_analyzer = None
-        if args.mode in ['llm-only', 'llm-fallback', 'llm-validated']:
+        if args.mode in ['llm-only', 'llm-validated']:
             logger.info(f"Initializing {args.model} model...")
             llm_analyzer = LLMAnalyzer(model_name=args.model)
             llm_analyzer.load_model()
@@ -85,9 +85,6 @@ def main() -> int:
                     elif args.mode == 'llm-validated' and llm_analyzer:
                         commit_msg_secrets = llm_analyzer.process_llm_validated(heuristic_filter, commit_msg_lines, 
                                                            commit, "COMMIT_MESSAGE", report_generator, args.model)
-                    elif args.mode == 'llm-fallback':
-                        commit_msg_secrets = llm_analyzer.process_llm_fallback(heuristic_filter, commit_msg_lines, 
-                                                          commit, "COMMIT_MESSAGE", report_generator, args.model)
                     
                     if commit_msg_secrets > 0:
                         logger.info(f"Found {commit_msg_secrets} secret(s) in commit message")
@@ -147,10 +144,6 @@ def main() -> int:
                     elif args.mode == 'llm-validated' and llm_analyzer:
                         found_secrets = llm_analyzer.process_llm_validated(heuristic_filter, all_lines, 
                                             commit, file_path, report_generator, args.model)
-                    
-                    elif args.mode == 'llm-fallback':
-                        found_secrets = llm_analyzer.process_llm_fallback(heuristic_filter, all_lines, 
-                                           commit, file_path, report_generator, args.model)
                     
                     secrets_found_in_commit += found_secrets
                 except Exception as e:
