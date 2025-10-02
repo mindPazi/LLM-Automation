@@ -19,7 +19,7 @@ def main() -> int:
     parser.add_argument('--out', type=str, default=config.get('cli', 'default_output', default='report.json'), help='Output file')
     parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-fallback', 'llm-validated'], 
                        default=config.get('cli', 'default_mode', default='llm-fallback'), help='Scan mode: llm-only, heuristic-only, llm-fallback, or llm-validated (uses heuristics to filter LLM false positives)')
-    parser.add_argument('--model', type=str, default=config.get('llm', 'default_model', default='gpt-5'), help='Model name')
+    parser.add_argument('--model', type=str, default=config.get('llm', 'default_model', default='gpt-5-mini'), help='Model name')
     parser.add_argument('--log-level', type=str, default='INFO', 
                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                        help='Set the logging level (default: INFO)')

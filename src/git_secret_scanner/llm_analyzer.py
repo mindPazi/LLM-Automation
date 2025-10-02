@@ -309,14 +309,17 @@ Commit message:
     def process_llm_fallback(self, heuristic_filter: Any, added_lines: List[str], 
                             commit: git.Commit, file_path: str, 
                             report_generator: Any, model_name: str) -> int:
+        total_count = 0
+        
+        
         llm_secrets = self.analyze_lines(added_lines)
         
         if llm_secrets:
-            unique_count = self._process_llm_secrets(
+            llm_count = self._process_llm_secrets(
                 llm_secrets, commit, file_path, 
                 report_generator, model_name
             )
-            return unique_count
+            total_count += llm_count
         
         
         heuristic_results = heuristic_filter.apply_regex_filters(added_lines)
@@ -332,11 +335,14 @@ Commit message:
                 else:
                     duplicate_count += 1
             
-            if duplicate_count > 0:
-                logger.info(f"Heuristic found {len(heuristic_results)} secret(s) missed by LLM in {file_path} ({unique_count} unique, {duplicate_count} duplicates filtered)")
-            else:
-                logger.info(f"Heuristic found {unique_count} unique secret(s) missed by LLM in {file_path}")
+            if unique_count > 0:
+                if duplicate_count > 0:
+                    logger.info(f"Heuristic found {len(heuristic_results)} secret(s) in {file_path} ({unique_count} new, {duplicate_count} already found by LLM)")
+                else:
+                    logger.info(f"Heuristic found {unique_count} additional secret(s) missed by LLM in {file_path}")
+            elif duplicate_count > 0:
+                logger.info(f"Heuristic confirmed {duplicate_count} secret(s) already found by LLM in {file_path}")
             
-            return unique_count
-        else:
-            return 0
+            total_count += unique_count
+        
+        return total_count

@@ -36,7 +36,7 @@ class ConfigLoader:
     def _get_default_config(self) -> Dict[str, Any]:
         return {
             'llm': {
-                'default_model': 'gpt-5',
+                'default_model': 'gpt-5-mini',
                 'max_completion_tokens': 16384,
                 'max_completion_tokens_message': 256,
                 'system_prompt': 'Find secrets. Return KEY : VALUE format only.',
