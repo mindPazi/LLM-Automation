@@ -126,27 +126,30 @@ def main() -> int:
                 if 'tests/unit/' in file_path or file_path.startswith('unit/'):
                     continue
                 
-                if len(change['added_lines']) == 0:
+                if len(change['added_lines']) == 0 and len(change['removed_lines']) == 0:
                     continue
                 
                 files_processed += 1
                 
                 try:
+                    
+                    all_lines = change['added_lines'] + change['removed_lines']
+                    
                     found_secrets = 0
                     if args.mode == 'llm-only' and llm_analyzer:
-                        found_secrets = llm_analyzer.process_llm_only(change['added_lines'], commit, file_path, 
+                        found_secrets = llm_analyzer.process_llm_only(all_lines, commit, file_path, 
                                        report_generator, args.model)
                     
                     elif args.mode == 'heuristic-only':
-                        found_secrets = heuristic_filter.process_heuristic_only(change['added_lines'], commit, 
+                        found_secrets = heuristic_filter.process_heuristic_only(all_lines, commit, 
                                              file_path, report_generator)
                     
                     elif args.mode == 'llm-validated' and llm_analyzer:
-                        found_secrets = llm_analyzer.process_llm_validated(heuristic_filter, change['added_lines'], 
+                        found_secrets = llm_analyzer.process_llm_validated(heuristic_filter, all_lines, 
                                             commit, file_path, report_generator, args.model)
                     
                     elif args.mode == 'llm-fallback':
-                        found_secrets = llm_analyzer.process_llm_fallback(heuristic_filter, change['added_lines'], 
+                        found_secrets = llm_analyzer.process_llm_fallback(heuristic_filter, all_lines, 
                                            commit, file_path, report_generator, args.model)
                     
                     secrets_found_in_commit += found_secrets
