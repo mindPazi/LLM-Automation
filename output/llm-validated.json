@@ -4,9 +4,9 @@
   "commits_scanned": 2,
   "findings": [
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -15,9 +15,20 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
+      "file_path": "tests/integration/test_large_codebase.py",
+      "finding_type": "llm_validated_secret",
+      "model": "gpt-5-mini",
+      "secret_key": "GITHUB_TOKEN",
+      "secret_value": "ghp_16CharacterGitHubToken1234567890ABCDEF",
+      "confidence": 0.82
+    },
+    {
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
+      "author": "mindPazi",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -26,9 +37,9 @@
       "confidence": 0.76
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -37,9 +48,9 @@
       "confidence": 0.81
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -48,9 +59,9 @@
       "confidence": 0.66
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -59,9 +70,9 @@
       "confidence": 0.78
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -70,9 +81,9 @@
       "confidence": 0.71
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -81,9 +92,9 @@
       "confidence": 0.69
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -92,9 +103,9 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -103,108 +114,97 @@
       "confidence": 0.81
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "JWT_SECRET",
-      "secret_value": "jwt_secret_key_f47ac10b_58cc_4372_a567_0e02b2c3d479",
-      "confidence": 0.78
+      "secret_key": "SENDGRID_API_KEY",
+      "secret_value": "SG.actual_sendgrid_key_with_lots_of_characters_1234567890",
+      "confidence": 0.97
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "ADMIN_PASSWORD",
-      "secret_value": "Admin@2025!SuperSecure",
-      "confidence": 0.79
+      "secret_key": "TWILIO_AUTH_TOKEN",
+      "secret_value": "actual_twilio_auth_token_32_chars_long_12345678",
+      "confidence": 0.76
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "MASTER_KEY",
-      "secret_value": "master_key_9f86d081884c7d659a2feaa0c55ad015a3bf4f1b",
-      "confidence": 0.79
+      "secret_key": "STRIPE_TEST_KEY",
+      "secret_value": "sk_test_4eC39HqLyjWDarjtT1zdp7dc",
+      "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "private_key",
-      "secret_value": "-----BEGIN RSA PRIVATE KEY-----\\nMIIEpAIBAAKCAQEA1234567890abcdefghijklmnopqrstuvwxyz\\nABCDEFGHIJKLM",
-      "confidence": 0.96
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_validated_secret",
-      "model": "gpt-5-mini",
-      "secret_key": "api_key",
+      "secret_key": "PRODUCTION_API_KEY",
       "secret_value": "prod_api_key_aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW3xY5z",
       "confidence": 0.81
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "secret",
+      "secret_key": "PRODUCTION_SECRET",
       "secret_value": "prod_secret_7f4df045_b3a7_4298_9f3e_8c5d6e7f8a9b",
       "confidence": 0.79
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "password",
+      "secret_key": "PRODUCTION_PASSWORD",
       "secret_value": "ProdPassword2025!Secure",
       "confidence": 0.79
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
-      "secret_key": "db_password",
+      "secret_key": "PRODUCTION_DB_PASSWORD",
       "secret_value": "PostgresAdmin2025!@#",
       "confidence": 0.79
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
       "secret_key": "BEARER_TOKEN",
       "secret_value": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0",
-      "confidence": 0.81
+      "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -213,9 +213,9 @@
       "confidence": 0.81
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -224,20 +224,20 @@
       "confidence": 0.81
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
       "secret_key": "google_client_secret",
       "secret_value": "GOCSPX-1234567890abcdefghijklmnop",
-      "confidence": 0.72
+      "confidence": 0.91
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
@@ -246,34 +246,22 @@
       "confidence": 0.78
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_validated_secret",
       "model": "gpt-5-mini",
       "secret_key": "instagram_access_token",
       "secret_value": "IGQVJYeUk0123456789abcdefghijklmnopqrstuvwxyz",
-      "confidence": 0.7
+      "confidence": 0.89
     }
   ],
   "heuristic_filtered_false_positives": [
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "GITHUB_TOKEN",
-      "secret_value": "ghp_16CharacterGitHubToken1234567890ABCDEF",
-      "confidence": 0.25,
-      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -283,9 +271,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -295,9 +283,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -307,21 +295,21 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
       "secret_key": "DEMO_PASSWORD",
       "secret_value": "demo123",
-      "confidence": 0.25,
-      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
+      "confidence": 0.0,
+      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -331,9 +319,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -343,57 +331,21 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
       "secret_key": "user",
       "secret_value": "password123@localhost/db",
-      "confidence": 0.25,
-      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "SENDGRID_API_KEY",
-      "secret_value": "SG.actual_sendgrid_key_with_lots_of_characters_1234567890",
       "confidence": 0.0,
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "TWILIO_AUTH_TOKEN",
-      "secret_value": "actual_twilio_auth_token_32_chars_long_12345678",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "STRIPE_TEST_KEY",
-      "secret_value": "sk_test_4eC39HqLyjWDarjtT1zdp7dc",
-      "confidence": 0.25,
-      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -403,9 +355,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -415,9 +367,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -427,165 +379,21 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "ENCRYPTION_KEY",
-      "secret_value": "aes256key_32bytes_long_key_here12345678",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "JWT_SECRET",
-      "secret_value": "test_jwt_secret",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "ENCRYPTION_KEY",
-      "secret_value": "test_encryption_key",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "ADMIN_PASSWORD",
-      "secret_value": "test123",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "MASTER_KEY",
-      "secret_value": "test_master_key",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "test_cert",
-      "secret_value": "-----BEGIN CERTIFICATE-----\\nTEST CERTIFICATE DATA\\n-----END CERTIFICATE-----",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "api_key",
-      "secret_value": "dev-api-key",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "secret",
-      "secret_value": "dev-secret",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "password",
-      "secret_value": "devpassword",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "db_password",
-      "secret_value": "password123",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "api_key",
-      "secret_value": "test-key",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "secret",
-      "secret_value": "test-secret",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
       "secret_key": "Key",
       "secret_value": "actual_api_key_x9y8z7w6v5u4t3s2r1q0p9o8",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+      "confidence": 0.25,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -595,9 +403,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -607,9 +415,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -619,57 +427,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "facebook_app_secret",
-      "secret_value": "test_facebook_secret",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "google_client_secret",
-      "secret_value": "test_google_secret",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "twitter_api_secret",
-      "secret_value": "test_twitter_secret",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
-      "file_path": "tests/integration/test_large_codebase.py",
-      "finding_type": "llm_false_positive",
-      "model": "gpt-5-mini",
-      "secret_key": "instagram_access_token",
-      "secret_value": "test_instagram_token",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
-    },
-    {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
-      "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -679,21 +439,21 @@
       "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
       "secret_key": "SALT_VALUE",
       "secret_value": "random_salt_value_12345",
-      "confidence": 0.0,
-      "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
+      "confidence": 0.25,
+      "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -703,9 +463,9 @@
       "filtered_reason": "LLM confidence too low: 0.25 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -715,9 +475,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -727,9 +487,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -739,9 +499,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",
@@ -751,9 +511,9 @@
       "filtered_reason": "LLM confidence too low: 0.00 < 0.5"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "finding_type": "llm_false_positive",
       "model": "gpt-5-mini",

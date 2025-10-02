@@ -4,9 +4,9 @@
   "commits_scanned": 2,
   "findings": [
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 6,
       "snippet": "API_KEY = \"sk-proj-1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z\"",
@@ -18,9 +18,9 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 13,
       "snippet": "PLACEHOLDER_SECRET = \"INSERT_YOUR_SECRET_HERE\"",
@@ -32,9 +32,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 27,
       "snippet": "PAYPAL_CLIENT_SECRET = \"EBWKjlELKMYqRNQ6sYvFo64FtaRLRR5BdHEESmha49TM\"",
@@ -46,9 +46,9 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 28,
       "snippet": "SENDGRID_API_KEY = \"SG.actual_sendgrid_key_with_lots_of_characters_1234567890\"",
@@ -60,9 +60,9 @@
       "confidence": 0.86
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 29,
       "snippet": "TWILIO_AUTH_TOKEN = \"actual_twilio_auth_token_32_chars_long_12345678\"",
@@ -74,9 +74,9 @@
       "confidence": 0.78
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 33,
       "snippet": "MOCK_TOKEN = \"mock_token_for_testing\"",
@@ -88,9 +88,9 @@
       "confidence": 0.8
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 34,
       "snippet": "FAKE_SECRET = \"fake_secret_value\"",
@@ -102,9 +102,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 59,
       "snippet": "        \"api_key\": \"prod_api_key_aB3dE5fG7hI9jK1lM3nO5pQ7rS9tU1vW3xY5z\",",
@@ -116,9 +116,9 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 60,
       "snippet": "        \"secret\": \"prod_secret_7f4df045_b3a7_4298_9f3e_8c5d6e7f8a9b\",",
@@ -130,9 +130,9 @@
       "confidence": 0.9
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 61,
       "snippet": "        \"password\": \"ProdPassword2025!Secure\",",
@@ -144,9 +144,9 @@
       "confidence": 0.9
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 62,
       "snippet": "        \"db_password\": \"PostgresAdmin2025!@#\"",
@@ -158,9 +158,9 @@
       "confidence": 0.9
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 67,
       "snippet": "        \"password\": \"devpassword\",",
@@ -172,9 +172,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 78,
       "snippet": "BEARER_TOKEN = \"Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIn0\"",
@@ -186,9 +186,9 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 88,
       "snippet": "        \"facebook_app_secret\": \"fb_secret_key_a1b2c3d4e5f6g7h8i9j0k1l2m3n4\",",
@@ -200,9 +200,9 @@
       "confidence": 1.0
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 89,
       "snippet": "        \"google_client_secret\": \"GOCSPX-1234567890abcdefghijklmnop\",",
@@ -214,9 +214,9 @@
       "confidence": 0.64
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 90,
       "snippet": "        \"twitter_api_secret\": \"twitter_secret_key_50_chars_long_1234567890abcdef\",",
@@ -228,9 +228,9 @@
       "confidence": 0.88
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 91,
       "snippet": "        \"instagram_access_token\": \"IGQVJYeUk0123456789abcdefghijklmnopqrstuvwxyz\"",
@@ -242,9 +242,9 @@
       "confidence": 0.56
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 96,
       "snippet": "        \"facebook_app_secret\": \"test_facebook_secret\",",
@@ -256,9 +256,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 97,
       "snippet": "        \"google_client_secret\": \"test_google_secret\",",
@@ -270,9 +270,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 98,
       "snippet": "        \"twitter_api_secret\": \"test_twitter_secret\",",
@@ -284,9 +284,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 99,
       "snippet": "        \"instagram_access_token\": \"test_instagram_token\"",
@@ -298,9 +298,9 @@
       "confidence": 0.6
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 110,
       "snippet": "FINAL_PRODUCTION_SECRET = \"this_is_the_final_production_key_abc123def456\"",
@@ -312,9 +312,9 @@
       "confidence": 0.85
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 111,
       "snippet": "FINAL_TEST_SECRET = \"this_is_a_test_secret\"",
@@ -328,9 +328,9 @@
   ],
   "heuristic_low_confidence_secrets": [
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 7,
       "snippet": "GITHUB_TOKEN = \"ghp_16CharacterGitHubToken1234567890ABCDEF\"",
@@ -343,9 +343,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 11,
       "snippet": "TEST_API_KEY = \"test-api-key-123\"",
@@ -358,9 +358,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 12,
       "snippet": "EXAMPLE_TOKEN = \"your-token-here\"",
@@ -373,9 +373,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 14,
       "snippet": "DEMO_PASSWORD = \"demo123\"",
@@ -388,9 +388,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 32,
       "snippet": "SAMPLE_API_KEY = \"sample-key-12345\"",
@@ -403,9 +403,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 65,
       "snippet": "        \"api_key\": \"dev-api-key\",",
@@ -418,9 +418,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 66,
       "snippet": "        \"secret\": \"dev-secret\",",
@@ -433,9 +433,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 68,
       "snippet": "        \"db_password\": \"password123\"",
@@ -448,9 +448,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 71,
       "snippet": "        \"api_key\": \"test-key\",",
@@ -463,9 +463,9 @@
       "filtered_reason": "Low confidence score"
     },
     {
-      "commit_hash": "cd1954b1c324c7f89571792da46efcf8ce2b575c",
+      "commit_hash": "dc47f989029b3f446a9f286625a3cc2082f00406",
       "author": "mindPazi",
-      "date": "2025-10-02 13:22:39+02:00",
+      "date": "2025-10-02 14:08:58+02:00",
       "file_path": "tests/integration/test_large_codebase.py",
       "line_number": 72,
       "snippet": "        \"secret\": \"test-secret\",",
