@@ -19,7 +19,7 @@ def main() -> int:
     parser.add_argument('--out', type=str, default=config.get('cli', 'default_output', default='report.json'), help='Output file')
     parser.add_argument('--mode', type=str, choices=['llm-only', 'heuristic-only', 'llm-fallback', 'llm-validated'], 
                        default=config.get('cli', 'default_mode', default='llm-fallback'), help='Scan mode: llm-only, heuristic-only, llm-fallback, or llm-validated (uses heuristics to filter LLM false positives)')
-    parser.add_argument('--model', type=str, default=config.get('llm', 'default_model', default='gpt-5-mini'), help='Model name')
+    parser.add_argument('--model', type=str, default=config.get('llm', 'default_model', default='gpt-5'), help='Model name')
     parser.add_argument('--log-level', type=str, default='INFO', 
                        choices=['DEBUG', 'INFO', 'WARNING', 'ERROR', 'CRITICAL'],
                        help='Set the logging level (default: INFO)')
@@ -79,6 +79,25 @@ def main() -> int:
         logger.info(f"Processing {len(commits)} commits")
         for i, commit in enumerate(commits):
             logger.info(f"Processing commit {i+1}/{len(commits)}: {commit.hexsha[:8]}")
+            
+            commit_msg_lines = commit.message.strip().split('\n')
+            if commit_msg_lines:
+                logger.debug(f"Processing commit message ({len(commit_msg_lines)} lines)")
+                try:
+                    if args.mode == 'llm-only' and llm_analyzer:
+                        llm_analyzer.process_llm_only(commit_msg_lines, commit, "COMMIT_MESSAGE", 
+                                                      report_generator, args.model)
+                    elif args.mode == 'heuristic-only':
+                        heuristic_filter.process_heuristic_only(commit_msg_lines, commit, 
+                                                                "COMMIT_MESSAGE", report_generator)
+                    elif args.mode == 'llm-validated' and llm_analyzer:
+                        llm_analyzer.process_llm_validated(heuristic_filter, commit_msg_lines, 
+                                                           commit, "COMMIT_MESSAGE", report_generator, args.model)
+                    elif args.mode == 'llm-fallback':
+                        llm_analyzer.process_llm_fallback(heuristic_filter, commit_msg_lines, 
+                                                          commit, "COMMIT_MESSAGE", report_generator, args.model)
+                except Exception as e:
+                    logger.error(f"Error processing commit message: {e}")
             
             try:
                 changes = handler.get_commit_changes(commit)

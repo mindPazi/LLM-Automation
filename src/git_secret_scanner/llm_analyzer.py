@@ -131,11 +131,22 @@ Where CONFIDENCE must be one of these values:
 - 0.75 = Probably a real secret (high entropy, looks authentic)
 - 1.0 = Definitely a real secret (matches known patterns, very high entropy)
 
-Examples:
+Examples of REAL secrets (0.75 or 1.0):
 database_password : mySecretPassword123 : 0.75
 api_key : sk-1234567890abcdef : 1.0
+aws_secret : AKIAIOSFODNN7EXAMPLE : 0.75
+
+Examples of FALSE POSITIVES (0 or 0.25):
 test_token : test-token-123 : 0
-example_key : your-api-key-here : 0.25
+example_key : your-api-key-here : 0
+placeholder : insert_your_token_here : 0
+descriptive : final_bearer_token_with_sufficient_length : 0
+readable_desc : this_is_the_secret_key : 0
+fake_data : staging_demo_secret_value : 0.25
+test_value : my_test_api_key_here : 0
+human_text : password_goes_here : 0
+
+IMPORTANT: If the value contains human-readable descriptions like "with_sufficient_length", "this_is_the", "put_your", "insert_here", etc., it's a FALSE POSITIVE (confidence = 0).
 
 If no secrets found, respond with "No secrets found"."""
         

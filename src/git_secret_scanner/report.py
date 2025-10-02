@@ -12,6 +12,7 @@ class ReportGenerator:
         self.findings = []
         self.filtered_false_positives = []
         self.llm_low_confidence = []
+        self.heuristic_low_confidence = []
         self.seen_secrets = set()
         self.heuristic_filter = HeuristicFilter()
         self.duplicates_count = 0
@@ -79,7 +80,15 @@ class ReportGenerator:
             
         self.seen_secrets.add(unique_id)
         finding = self._create_heuristic_finding(commit, file_path, heuristic_finding, finding_type)
-        self.findings.append(finding)
+        
+        
+        if finding['confidence'] < 0.5:
+            finding['finding_type'] = 'heuristic_low_confidence'
+            finding['filtered_reason'] = 'Low confidence score'
+            self.heuristic_low_confidence.append(finding)
+        else:
+            self.findings.append(finding)
+        
         return finding
     
     def _create_base_finding(self, commit: git.Commit, file_path: str) -> Dict[str, Any]:
@@ -149,7 +158,8 @@ class ReportGenerator:
     
     def save_report(self, repository: str, scan_mode: str, commits_count: int, findings: List[Dict[str, Any]], 
                    output_path: str, false_positives: Optional[List[Dict[str, Any]]] = None,
-                   llm_low_confidence: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
+                   llm_low_confidence: Optional[List[Dict[str, Any]]] = None,
+                   heuristic_low_confidence: Optional[List[Dict[str, Any]]] = None) -> Dict[str, Any]:
         report = {
             'repository': repository,
             'scan_mode': scan_mode,
@@ -159,6 +169,9 @@ class ReportGenerator:
         
         if llm_low_confidence:
             report['llm_low_confidence_secrets'] = llm_low_confidence
+        
+        if heuristic_low_confidence:
+            report['heuristic_low_confidence_secrets'] = heuristic_low_confidence
         
         if false_positives:
             report['heuristic_filtered_false_positives'] = false_positives
@@ -173,7 +186,8 @@ class ReportGenerator:
             repository, scan_mode, commits_count, 
             self.findings, output_path, 
             self.filtered_false_positives if self.filtered_false_positives else None,
-            self.llm_low_confidence if self.llm_low_confidence else None
+            self.llm_low_confidence if self.llm_low_confidence else None,
+            self.heuristic_low_confidence if self.heuristic_low_confidence else None
         )
     
     def print_summary(self, findings: List[Dict[str, Any]], scan_mode: str) -> None:
@@ -206,6 +220,9 @@ class ReportGenerator:
         
         if scan_mode in ['llm-only', 'llm-fallback'] and self.llm_low_confidence:
             logger.info(f"  - LLM low confidence secrets filtered: {len(self.llm_low_confidence)}")
+        
+        if scan_mode == 'heuristic-only' and self.heuristic_low_confidence:
+            logger.info(f"  - Heuristic low confidence secrets filtered: {len(self.heuristic_low_confidence)}")
         
         if scan_mode == 'llm-validated' and self.filtered_false_positives:
             logger.info(f"  - Heuristic validation filtered: {len(self.filtered_false_positives)}")

@@ -117,6 +117,84 @@ class HeuristicFilter:
         
         return entropy
     
+    def _detect_sequences(self, string: str) -> float:
+        if not string or len(string) < 3:
+            return 0.0
+        
+        string_lower = string.lower()
+        penalty = 0.0
+        
+        
+        alpha_sequences = [
+            'abcdefghijklmnopqrstuvwxyz',
+            'zyxwvutsrqponmlkjihgfedcba'
+        ]
+        
+        for seq in alpha_sequences:
+            for i in range(len(string_lower) - 2):
+                substr = string_lower[i:i+3]
+                if substr in seq:
+                    
+                    seq_length = 3
+                    while i + seq_length < len(string_lower) and \
+                          string_lower[i:i+seq_length+1] in seq:
+                        seq_length += 1
+                    penalty = max(penalty, seq_length / len(string))
+        
+        
+        numeric_sequences = [
+            '0123456789',
+            '9876543210'
+        ]
+        
+        for seq in numeric_sequences:
+            for i in range(len(string) - 2):
+                substr = string[i:i+3]
+                if substr in seq:
+                    seq_length = 3
+                    while i + seq_length < len(string) and \
+                          string[i:i+seq_length+1] in seq:
+                        seq_length += 1
+                    penalty = max(penalty, seq_length / len(string))
+        
+        
+        keyboard_patterns = [
+            'qwertyuiop',
+            'asdfghjkl',
+            'zxcvbnm',
+            'poiuytrewq',
+            'lkjhgfdsa',
+            'mnbvcxz',
+            '1234567890',
+            '0987654321',
+            'qwerty',
+            'asdfgh',
+            'zxcvbn',
+            'qazwsx',
+            'qweasd'
+        ]
+        
+        for pattern in keyboard_patterns:
+            if pattern in string_lower:
+                pattern_ratio = len(pattern) / len(string)
+                penalty = max(penalty, pattern_ratio)
+        
+        
+        for pattern_len in range(2, min(len(string)//2 + 1, 8)):
+            pattern = string[:pattern_len]
+            repetitions = 1
+            for i in range(pattern_len, len(string), pattern_len):
+                if string[i:i+pattern_len] == pattern:
+                    repetitions += 1
+                else:
+                    break
+            if repetitions >= 2:
+                coverage = (repetitions * pattern_len) / len(string)
+                if coverage >= 0.8:  
+                    penalty = max(penalty, coverage)
+        
+        return min(penalty, 0.9)  
+    
     def _is_valid_secret(self, value: str) -> bool:
         if not value or len(value) < self.min_secret_length:
             return False
@@ -180,7 +258,7 @@ class HeuristicFilter:
         value_lower = secret_value.lower()
         
         placeholder_patterns = [
-            r'^(test|demo|example|sample|dummy|fake|mock)[\W_]',
+            r'\b(test|demo|example|sample|dummy|fake|mock|staging|dev)\b',
             r'^(your|my|the)[\W_]?(password|secret|token|key)',
             r'(password|secret|token|key)123',
             r'^changeme$', r'^replaceme$', r'^todo$', r'^fixme$',
@@ -206,6 +284,12 @@ class HeuristicFilter:
             confidence = 0.7
         else:
             confidence = 0.85
+        
+        
+        sequence_penalty = self._detect_sequences(secret_value)
+        if sequence_penalty > 0:
+            logger.debug(f"Sequence detected in '{secret_value[:20]}...', penalty: {sequence_penalty:.2f}")
+            confidence = confidence * (1 - sequence_penalty)
         
         if any(secret_value.startswith(prefix) for prefix in self.known_prefixes):
             confidence = min(1.0, confidence + 0.2)

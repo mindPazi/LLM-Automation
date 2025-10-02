@@ -77,7 +77,7 @@ python -m src.git_secret_scanner.cli \
   - `heuristic-only`: Uses only heuristic patterns (no API key required)
   - `llm-fallback`: Uses LLM first, falls back to heuristics if no secrets found
   - `llm-validated`: Uses heuristics to filter LLM false positives
-- `--model MODEL`: LLM model name (default: 'gpt-5-mini')
+- `--model MODEL`: LLM model name (default: 'gpt-5')
 - `--log-level LEVEL`: Logging level (DEBUG, INFO, WARNING, ERROR, CRITICAL, default: INFO)
 - `--log-file FILE`: Log file path (optional, logs to console by default)
 
@@ -127,7 +127,7 @@ The generated JSON report contains findings with different structures depending 
       "date": "2025-09-28 15:14:08+02:00",
       "file_path": "config/settings.py",
       "finding_type": "llm_detected_secret",
-      "model": "gpt-5-mini",
+      "model": "gpt-5",
       "secret_key": "api_key",
       "secret_value": "sk-proj-1a2b3c4d5e6f7g8h9i0j1k2l3m4n5o6p7q8r9s0t1u2v3w4x5y6z",
       "confidence": 0.95
@@ -154,7 +154,7 @@ The generated JSON report contains findings with different structures depending 
       "date": "2025-09-28 15:14:08+02:00",
       "file_path": "test_file.py",
       "finding_type": "llm_low_confidence",
-      "model": "gpt-5-mini",
+      "model": "gpt-5",
       "secret_key": "password",
       "secret_value": "password123",
       "confidence": 0.25,
