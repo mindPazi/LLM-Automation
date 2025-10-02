@@ -86,7 +86,10 @@ class ReportGenerator:
             finding['finding_type'] = 'heuristic_low_confidence'
             finding['filtered_reason'] = 'Low confidence score'
             self.heuristic_low_confidence.append(finding)
+            return None
         else:
+            if 'filtered_reason' in finding:
+                del finding['filtered_reason']
             self.findings.append(finding)
         
         return finding

@@ -27,7 +27,6 @@ class HeuristicFilter:
         logger.info("HeuristicFilter initialized successfully")
     
     def apply_filters(self, potential_issues: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        logger.debug(f"Applying filters to {len(potential_issues)} potential issues")
         filtered_issues = []
         
         for issue in potential_issues:
@@ -36,23 +35,19 @@ class HeuristicFilter:
                 validation_result = self._validate_secret_value(value)
                 
                 if validation_result['is_valid']:
-                    logger.debug(f"Valid secret: {issue.get('secret_key', 'unknown')[:20]}...")
                     filtered_issues.append(issue)
                 else:
-                    logger.debug(f"Filtered out: {validation_result.get('reason', 'unknown reason')}")
+                    logger.error(f"Filtered out: {validation_result.get('reason', 'unknown reason')}")
             else:
                 filtered_issues.append(issue)
         
-        logger.debug(f"Filtered to {len(filtered_issues)} valid issues")
         return filtered_issues
     
     def apply_regex_filters(self, content: Any) -> List[Dict[str, Any]]:
-        logger.debug("Starting regex filter analysis")
         findings = []
         found_secrets = set()  
         
         lines = content.split('\n') if isinstance(content, str) else content
-        logger.debug(f"Processing {len(lines)} lines")
         
         for line_num, line in enumerate(lines, 1):
             line_has_secret = False  
@@ -84,7 +79,6 @@ class HeuristicFilter:
                     
                     if self._is_valid_secret(value):
                         entropy = self.calculate_entropy(value)
-                        logger.debug(f"Found potential secret on line {line_num}: {key[:20]}... (entropy: {entropy:.2f})")
                         findings.append({
                             'line_number': line_num,
                             'line': line[:200],  
@@ -212,25 +206,20 @@ class HeuristicFilter:
     
     
     def _validate_llm_finding(self, key: str, value: str) -> bool:
-        logger.debug(f"Validating LLM finding: {key[:20] if key else 'no-key'}...")
-        
         if not value or not key:
-            logger.debug("Missing key or value")
             return False
         
         confidence = self.calculate_confidence(key, value)
         
         if confidence >= self.filter_threshold:
-            logger.debug(f"LLM finding validated with confidence: {confidence}")
             return True
         else:
-            logger.debug(f"LLM finding rejected with low confidence: {confidence}")
+            logger.error(f"LLM finding rejected with low confidence: {confidence}")
             return False
     
     def adjust_confidence_with_heuristics(self, key: str, value: str) -> Tuple[float, bool]:
         confidence = self.calculate_confidence(key, value)
         should_filter = confidence < self.filter_threshold
-        logger.debug(f"Confidence: {confidence:.2f}, filter: {should_filter}")
         return confidence, should_filter
     
     def _validate_secret_value(self, value: str) -> Dict[str, Any]:
@@ -288,7 +277,6 @@ class HeuristicFilter:
         
         sequence_penalty = self._detect_sequences(secret_value)
         if sequence_penalty > 0:
-            logger.debug(f"Sequence detected in '{secret_value[:20]}...', penalty: {sequence_penalty:.2f}")
             confidence = confidence * (1 - sequence_penalty)
         
         if any(secret_value.startswith(prefix) for prefix in self.known_prefixes):
@@ -311,14 +299,12 @@ class HeuristicFilter:
     
     def process_heuristic_only(self, added_lines: List[str], commit: git.Commit, 
                               file_path: str, report_generator: Any) -> int:
-        logger.debug(f"Running heuristic filters on {len(added_lines)} lines")
         heuristic_results = self.apply_regex_filters(added_lines)
         
         if heuristic_results:
             unique_count = 0
             duplicate_count = 0
             for heuristic_finding in heuristic_results:
-                logger.debug(f"Adding heuristic finding: {heuristic_finding.get('secret_key', 'unknown')}")
                 result = report_generator.add_heuristic_finding(commit, file_path, heuristic_finding)
                 if result:
                     unique_count += 1
@@ -331,5 +317,5 @@ class HeuristicFilter:
                 logger.info(f"Heuristic found {unique_count} unique secret(s) in {file_path}")
             return unique_count
         else:
-            logger.debug(f"No secrets found by heuristics in {file_path}")
+            logger.info(f"No secrets found by heuristics in {file_path}")
             return 0

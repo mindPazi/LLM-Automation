@@ -10,14 +10,12 @@ class GitHandler:
         logger.info(f"Initializing GitHandler with repo_path: {repo_path}")
         self.repo_path = repo_path
         self.repo = git.Repo(repo_path)
-        logger.debug(f"Repository initialized: {self.repo}")
     
     def get_recent_commits(self, n: int = 10) -> List[git.Commit]:
         logger.info(f"Getting recent {n} commits")
         commits = []
         try:
             for commit in self.repo.iter_commits(max_count=n):
-                logger.debug(f"Processing commit: {commit.hexsha[:8]}")
                 commits.append(commit)
             logger.info(f"Found {len(commits)} commits")
         except Exception as e:
@@ -33,16 +31,12 @@ class GitHandler:
                 
                 
                 rev_range = f"{start_commit}^..{end_commit}"
-                logger.debug(f"Using inclusive range: {rev_range}")
                 for commit in self.repo.iter_commits(rev_range):
-                    logger.debug(f"Found commit in range: {commit.hexsha[:8]}")
                     commits.append(commit)
             else:
                 
                 rev_range = f"{start_commit}^..{start_commit}"
-                logger.debug(f"Single commit range: {rev_range}")
                 for commit in self.repo.iter_commits(rev_range):
-                    logger.debug(f"Found single commit: {commit.hexsha[:8]}")
                     commits.append(commit)
             
             logger.info(f"Found {len(commits)} commits in range (inclusive)")
@@ -57,13 +51,9 @@ class GitHandler:
         logger.info(f"Getting diff for commit: {commit_hash}")
         try:
             commit = self.repo.commit(commit_hash)
-            logger.debug(f"Commit object retrieved: {commit}")
             if commit.parents:
-                logger.debug(f"Commit has {len(commit.parents)} parent(s)")
                 diff = commit.diff(commit.parents[0])
-                logger.debug(f"Diff created with parent")
                 return diff
-            logger.debug("Commit has no parents (initial commit)")
             return None
         except Exception as e:
             logger.error(f"Error getting commit diff: {e}")
@@ -75,19 +65,14 @@ class GitHandler:
         
         try:
             if not commit.parents:
-                logger.debug("Initial commit detected - no parents")
                 parent = None
                 diffs = commit.diff(None, create_patch=True)
             else:
-                logger.debug(f"Commit has {len(commit.parents)} parent(s)")
                 parent = commit.parents[0]
                 diffs = parent.diff(commit, create_patch=True)
             
-            logger.debug(f"Processing {len(diffs) if diffs else 0} diff items")
-            
             for diff_item in diffs:
                 file_path = diff_item.a_path or diff_item.b_path
-                logger.debug(f"Processing diff for file: {file_path}")
                 
                 change = {
                     'file_path': file_path,
@@ -105,8 +90,6 @@ class GitHandler:
                             change['added_lines'].append(line[1:])
                         elif line.startswith('-') and not line.startswith('---'):
                             change['removed_lines'].append(line[1:])
-                    
-                    logger.debug(f"File {file_path}: {len(change['added_lines'])} added lines, {len(change['removed_lines'])} removed lines")
                 
                 changes.append(change)
             

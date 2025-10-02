@@ -15,7 +15,6 @@ class LLMAnalyzer:
     def __init__(self, model_name: Optional[str] = None, api_key: Optional[str] = None) -> None:
         logger.info("Initializing LLMAnalyzer")
         self.model_name = model_name or config.get('llm', 'default_model')
-        logger.debug(f"Using model: {self.model_name}")
         
         self.api_key = api_key or os.environ.get("OPENAI_API_KEY")
         self.client = None
@@ -32,11 +31,9 @@ class LLMAnalyzer:
         logger.info("OpenAI client loaded successfully")
     
     def extract_findings(self, llm_response: str) -> List[Dict[str, Any]]:
-        logger.debug("Extracting findings from LLM response")
         findings = []
         
         if not llm_response or "Error" in llm_response:
-            logger.debug("No response or error in LLM response")
             return findings
         
         seen_findings = set()
@@ -76,7 +73,6 @@ class LLMAnalyzer:
                     'type': 'llm_detected_secret',
                     'confidence': confidence
                 })
-                logger.debug(f"Extracted {key} with confidence {confidence}")
         
         
         if not findings:
@@ -103,21 +99,16 @@ class LLMAnalyzer:
                         'type': 'llm_detected_secret',
                         'confidence': 0.75  
                     })
-                    logger.debug(f"Extracted {key} with default confidence 0.75")
         
         if re.search(r'no\s+(secrets?|issues?|problems?)\s+found', llm_response, re.IGNORECASE):
-            logger.debug("LLM explicitly stated no secrets found")
             return []
         
-        logger.debug(f"Extracted {len(findings)} findings from LLM response")
         return findings
     
     def analyze_diff(self, diff_content: str) -> str:
         if not self.client:
             logger.error("OpenAI client not initialized")
             raise ValueError("OpenAI client not initialized. Call load_model() first.")
-        
-        logger.debug(f"Analyzing diff with {len(diff_content)} characters")
         
         prompt = f"""Find secrets in this code:
 {diff_content}
@@ -151,7 +142,6 @@ IMPORTANT: If the value contains human-readable descriptions like "with_sufficie
 If no secrets found, respond with "No secrets found"."""
         
         try:
-            logger.debug(f"Sending request to {self.model_name}")
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[
@@ -162,7 +152,6 @@ If no secrets found, respond with "No secrets found"."""
             )
             
             result = response.choices[0].message.content
-            logger.debug(f"Received response from LLM ({len(result) if result else 0} characters)")
             return result if result else "No response from LLM"
             
         except Exception as e:
@@ -174,8 +163,6 @@ If no secrets found, respond with "No secrets found"."""
             logger.error("OpenAI client not initialized")
             raise ValueError("OpenAI client not initialized. Call load_model() first.")
         
-        logger.debug(f"Analyzing commit message: {message[:50]}...")
-        
         prompt = f"""Analyze the following git commit message for exposed secrets.
 Return ONLY found secrets in the format KEY : VALUE, one per line.
 If no secrets are found, respond with "No secrets found".
@@ -184,7 +171,6 @@ Commit message:
 {message}"""
         
         try:
-            logger.debug(f"Sending commit message request to {self.model_name}")
             response = self.client.chat.completions.create(
                 model=self.model_name,
                 messages=[
@@ -195,7 +181,6 @@ Commit message:
             )
             
             result = response.choices[0].message.content
-            logger.debug(f"Received commit message response from LLM")
             return result
             
         except Exception as e:
@@ -203,11 +188,9 @@ Commit message:
             return f"Error analyzing commit message: {str(e)}"
     
     def analyze_lines(self, added_lines: List[str]) -> List[Dict[str, Any]]:
-        logger.debug(f"Analyzing {len(added_lines)} lines with LLM")
         diff_content = '\n'.join(added_lines)
         llm_result = self.analyze_diff(diff_content)
         findings = self.extract_findings(llm_result)
-        logger.debug(f"LLM found {len(findings)} findings")
         return findings
     
     def _process_llm_secrets(self, llm_secrets: List[Dict[str, Any]], 
@@ -234,8 +217,10 @@ Commit message:
                 else:
                     duplicate_count += 1
         
-        if unique_count > 0 or low_confidence_count > 0:
-            logger.info(f"LLM found {unique_count + low_confidence_count} secret(s) in {file_path}: {unique_count} high confidence, {low_confidence_count} low confidence (filtered)")
+        if unique_count > 0:
+            logger.info(f"LLM found {unique_count} high confidence secret(s) in {file_path}")
+        if low_confidence_count > 0:
+            logger.info(f"LLM filtered {low_confidence_count} low confidence secret(s) in {file_path}")
         if duplicate_count > 0:
             logger.info(f"  Duplicates filtered: {duplicate_count}")
             
@@ -252,7 +237,6 @@ Commit message:
                 report_generator, model_name
             )
         else:
-            logger.debug(f"LLM found no secrets in {file_path}")
             return 0
     
     def process_llm_validated(self, heuristic_filter: Any, added_lines: List[str], 
@@ -261,7 +245,6 @@ Commit message:
         llm_secrets = self.analyze_lines(added_lines)
         
         if not llm_secrets:
-            logger.debug(f"LLM found no secrets in {file_path}")
             return 0
         
         unique_secrets = []
@@ -356,5 +339,4 @@ Commit message:
             
             return unique_count
         else:
-            logger.debug(f"No secrets found in {file_path}")
             return 0
