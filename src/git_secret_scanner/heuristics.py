@@ -256,7 +256,14 @@ class HeuristicFilter:
         
         for pattern in placeholder_patterns:
             if re.search(pattern, value_lower):
-                return 0.1
+                if value_lower.startswith('sk_test_'):
+                    return 0.5
+                elif 'bearer ' in value_lower and len(secret_value) > 30:
+                    return 0.5
+                elif re.search(r'\b(test|staging|dev)\b', value_lower) and len(secret_value) > 20:
+                    return 0.4
+                else:
+                    return 0.3
         
         if len(set(secret_value)) <= 2:
             return 0.1

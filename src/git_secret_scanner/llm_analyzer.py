@@ -71,7 +71,7 @@ class LLMAnalyzer:
                     'key': key,
                     'value': value[:100],
                     'type': 'llm_detected_secret',
-                    'confidence': confidence
+                    'llm_confidence': confidence
                 })
         
         
@@ -97,21 +97,21 @@ class LLMAnalyzer:
                         'key': key,
                         'value': value[:100],
                         'type': 'llm_detected_secret',
-                        'confidence': 0.75  
+                        'llm_confidence': 0.75  
                     })
         
         if re.search(r'no\s+(secrets?|issues?|problems?)\s+found', llm_response, re.IGNORECASE):
             return []
         
         return findings
+    def analyze_content(self, content: str) -> str:
     
-    def analyze_diff(self, diff_content: str) -> str:
         if not self.client:
             logger.error("OpenAI client not initialized")
             raise ValueError("OpenAI client not initialized. Call load_model() first.")
         
         prompt = f"""Find secrets in this code:
-{diff_content}
+{content}
 
 Return format:
 KEY : VALUE : CONFIDENCE
@@ -155,43 +155,10 @@ If no secrets found, respond with "No secrets found"."""
             return result if result else "No response from LLM"
             
         except Exception as e:
-            logger.error(f"Error analyzing diff: {str(e)}")
-            return f"Error analyzing diff: {str(e)}"
+            logger.error(f"Error analyzing content: {str(e)}")
+            return f"Error analyzing content: {str(e)}"
     
-    def analyze_commit_message(self, message: str) -> str:
-        if not self.client:
-            logger.error("OpenAI client not initialized")
-            raise ValueError("OpenAI client not initialized. Call load_model() first.")
-        
-        prompt = f"""Analyze the following git commit message for exposed secrets.
-Return ONLY found secrets in the format KEY : VALUE, one per line.
-If no secrets are found, respond with "No secrets found".
-
-Commit message:
-{message}"""
-        
-        try:
-            response = self.client.chat.completions.create(
-                model=self.model_name,
-                messages=[
-                    {"role": "system", "content": config.get('llm', 'system_prompt_commit')},
-                    {"role": "user", "content": prompt}
-                ],
-                max_completion_tokens=config.get('llm', 'max_completion_tokens_message')
-            )
-            
-            result = response.choices[0].message.content
-            return result
-            
-        except Exception as e:
-            logger.error(f"Error analyzing commit message: {str(e)}")
-            return f"Error analyzing commit message: {str(e)}"
     
-    def analyze_lines(self, added_lines: List[str]) -> List[Dict[str, Any]]:
-        diff_content = '\n'.join(added_lines)
-        llm_result = self.analyze_diff(diff_content)
-        findings = self.extract_findings(llm_result)
-        return findings
     
     def _process_llm_secrets(self, llm_secrets: List[Dict[str, Any]], 
                                             commit: git.Commit,
@@ -203,10 +170,10 @@ Commit message:
         
         for secret in llm_secrets:
             
-            confidence = secret.get('confidence', 0.75)  
+            llm_confidence = secret.get('llm_confidence', 0.75)  
             
-            if confidence < 0.5:
-                secret['filtered_reason'] = f'LLM confidence too low: {confidence:.2f} < 0.5'
+            if llm_confidence < 0.5:
+                secret['filtered_reason'] = f'LLM confidence too low: {llm_confidence:.2f} < 0.5'
                 result = report_generator.add_llm_finding(commit, file_path, secret, model_name, category='low_confidence')
                 if result:
                     low_confidence_count += 1
@@ -229,7 +196,9 @@ Commit message:
     def process_llm_only(self, added_lines: List[str], commit: git.Commit, 
                         file_path: str, report_generator: Any, model_name: str) -> int:
         
-        llm_secrets = self.analyze_lines(added_lines)
+        content = '\n'.join(added_lines)
+        llm_result = self.analyze_content(content)
+        llm_secrets = self.extract_findings(llm_result)
         
         if llm_secrets:
             return self._process_llm_secrets(
@@ -242,7 +211,9 @@ Commit message:
     def process_llm_validated(self, heuristic_filter: Any, added_lines: List[str], 
                              commit: git.Commit, file_path: str, 
                              report_generator: Any, model_name: str) -> int:
-        llm_secrets = self.analyze_lines(added_lines)
+        content = '\n'.join(added_lines)
+        llm_result = self.analyze_content(content)
+        llm_secrets = self.extract_findings(llm_result)
         
         if not llm_secrets:
             return 0
@@ -259,7 +230,7 @@ Commit message:
         
         for secret in unique_secrets:
             
-            llm_confidence = secret.get('confidence', 0.75)
+            llm_confidence = secret.get('llm_confidence', 0.75)
             
             
             if llm_confidence >= 0.5:
@@ -272,7 +243,7 @@ Commit message:
                 
                 
                 
-                final_confidence = (llm_confidence * 0.7) + (heuristic_confidence * 0.3)
+                final_confidence = (llm_confidence * 0.75) + (heuristic_confidence * 0.25)
                 secret['adjusted_confidence'] = round(final_confidence, 2)
                 
                 if final_confidence >= 0.5:
@@ -312,7 +283,9 @@ Commit message:
         total_count = 0
         
         
-        llm_secrets = self.analyze_lines(added_lines)
+        content = '\n'.join(added_lines)
+        llm_result = self.analyze_content(content)
+        llm_secrets = self.extract_findings(llm_result)
         
         if llm_secrets:
             llm_count = self._process_llm_secrets(

@@ -108,6 +108,8 @@ class ReportGenerator:
         
         if 'adjusted_confidence' in secret:
             confidence = secret['adjusted_confidence']
+        elif 'llm_confidence' in secret:
+            confidence = secret['llm_confidence']
         else:
             confidence = self.heuristic_filter.calculate_confidence(
                 secret['key'], 

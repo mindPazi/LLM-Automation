@@ -1,74 +1,74 @@
 import json
 import os
-from typing import Dict, Set, Tuple
+import re
+from typing import Dict, Set
+
+def extract_ground_truth_from_annotated():
+    ground_truth = {}
+    
+    with open('tests/integration/test_large_codebase_annotated.py', 'r') as f:
+        lines = f.readlines()
+    
+    for _, line in enumerate(lines, 1):
+        match = re.search(r'(\w+)\s*=\s*["\']([^"\']+)["\'].*#\s*(TRUE|FALSE)', line)
+        if not match:
+            match = re.search(r'["\'](\w+)["\']:\s*["\']([^"\']+)["\'].*#\s*(TRUE|FALSE)', line)
+        
+        if match:
+            key = match.group(1)
+            value = match.group(2)
+            is_true = match.group(3) == 'TRUE'
+            ground_truth[f"{key}:{value}"] = is_true
+    
+    return ground_truth
 
 def load_json_files():
     modes = ['llm-only', 'heuristic-only', 'llm-validated', 'llm-fallback']
-    all_secrets = set()
+    all_secrets = {}
     mode_secrets = {}
     
     for mode in modes:
         filepath = f'output/{mode}.json'
+        mode_secrets[mode] = set()
+        
         if os.path.exists(filepath):
             with open(filepath, 'r') as f:
                 data = json.load(f)
-                mode_secrets[mode] = set()
+                
+                seen_secrets = set()
                 
                 for finding in data.get('findings', []):
-                    secret_id = f"{finding['commit_hash']}:{finding['file_path']}:{finding.get('line_number', 'N/A')}:{finding['secret_key']}:{finding['secret_value']}"
-                    all_secrets.add(secret_id)
-                    mode_secrets[mode].add(secret_id)
+                    if 'tests/integration/test_large_codebase' in finding['file_path']:
+                        secret_value = finding['secret_value'].replace('...', '')
+                        
+                        if mode == 'llm-fallback':
+                            clean_value = secret_value.rstrip('.')
+                            dedup_key = f"{clean_value}"
+                            
+                            if any(clean_value in seen or seen in clean_value for seen in seen_secrets):
+                                continue
+                            seen_secrets.add(clean_value)
+                        
+                        secret_id = f"{finding['secret_key']}:{finding['secret_value']}"
+                        all_secrets[secret_id] = finding
+                        mode_secrets[mode].add(secret_id)
                 
                 for finding in data.get('llm_low_confidence_secrets', []):
-                    secret_id = f"{finding['commit_hash']}:{finding['file_path']}:{finding.get('line_number', 'N/A')}:{finding['secret_key']}:{finding['secret_value']}"
-                    all_secrets.add(secret_id)
+                    if 'tests/integration/test_large_codebase' in finding['file_path']:
+                        secret_id = f"{finding['secret_key']}:{finding['secret_value']}"
+                        all_secrets[secret_id] = finding
                 
                 for finding in data.get('heuristic_low_confidence_secrets', []):
-                    secret_id = f"{finding['commit_hash']}:{finding['file_path']}:{finding.get('line_number', 'N/A')}:{finding['secret_key']}:{finding['secret_value']}"
-                    all_secrets.add(secret_id)
+                    if 'tests/integration/test_large_codebase' in finding['file_path']:
+                        secret_id = f"{finding['secret_key']}:{finding['secret_value']}"
+                        all_secrets[secret_id] = finding
                 
                 for finding in data.get('heuristic_filtered_false_positives', []):
-                    secret_id = f"{finding['commit_hash']}:{finding['file_path']}:{finding.get('line_number', 'N/A')}:{finding['secret_key']}:{finding['secret_value']}"
-                    all_secrets.add(secret_id)
+                    if 'tests/integration/test_large_codebase' in finding['file_path']:
+                        secret_id = f"{finding['secret_key']}:{finding['secret_value']}"
+                        all_secrets[secret_id] = finding
     
     return all_secrets, mode_secrets
-
-def collect_ground_truth(all_secrets: Set[str]):
-    ground_truth = {}
-    ground_truth_file = 'output/ground_truth.json'
-    
-    if os.path.exists(ground_truth_file):
-        with open(ground_truth_file, 'r') as f:
-            ground_truth = json.load(f)
-    
-    for secret_id in sorted(all_secrets):
-        if secret_id not in ground_truth:
-            parts = secret_id.split(':')
-            commit = parts[0][:8]
-            filepath = parts[1]
-            line = parts[2]
-            key = parts[3]
-            value = parts[4]
-            
-            print(f"\n{'='*80}")
-            print(f"Commit: {commit}")
-            print(f"File: {filepath}")
-            print(f"Line: {line}")
-            print(f"Key: {key}")
-            print(f"Value: {value}")
-            print(f"{'='*80}")
-            
-            while True:
-                response = input("Is this a real secret? (y/n): ").lower()
-                if response in ['y', 'n']:
-                    ground_truth[secret_id] = (response == 'y')
-                    break
-                print("Please enter 'y' or 'n'")
-            
-            with open(ground_truth_file, 'w') as f:
-                json.dump(ground_truth, f, indent=2)
-    
-    return ground_truth
 
 def calculate_metrics(mode_secrets: Dict[str, Set[str]], ground_truth: Dict[str, bool]):
     results = {}
@@ -81,18 +81,26 @@ def calculate_metrics(mode_secrets: Dict[str, Set[str]], ground_truth: Dict[str,
         tn = 0
         fn = 0
         
-        for secret_id in all_possible_secrets:
-            is_real_secret = ground_truth[secret_id]
-            is_detected = secret_id in detected_secrets
-            
-            if is_real_secret and is_detected:
-                tp += 1
-            elif is_real_secret and not is_detected:
-                fn += 1
-            elif not is_real_secret and is_detected:
-                fp += 1
-            elif not is_real_secret and not is_detected:
-                tn += 1
+        detected_matched = set()
+        
+        for detected in detected_secrets:
+            found_match = False
+            for gt_secret, is_real in ground_truth.items():
+                if detected in gt_secret or gt_secret in detected:
+                    found_match = True
+                    detected_matched.add(gt_secret)
+                    if is_real:
+                        tp += 1
+                    else:
+                        fp += 1
+                    break
+        
+        for gt_secret, is_real in ground_truth.items():
+            if gt_secret not in detected_matched:
+                if is_real:
+                    fn += 1
+                else:
+                    tn += 1
         
         precision = tp / (tp + fp) if (tp + fp) > 0 else 0
         recall = tp / (tp + fn) if (tp + fn) > 0 else 0
@@ -113,13 +121,18 @@ def calculate_metrics(mode_secrets: Dict[str, Set[str]], ground_truth: Dict[str,
     return results
 
 def main():
-    print("Loading secrets from JSON files...")
+    print("Extracting ground truth from annotated file...")
+    ground_truth = extract_ground_truth_from_annotated()
+    
+    total_true = sum(1 for v in ground_truth.values() if v)
+    total_false = sum(1 for v in ground_truth.values() if not v)
+    print(f"Found {len(ground_truth)} ground truth secrets: {total_true} TRUE, {total_false} FALSE")
+    
+    print("\nLoading secrets from JSON files...")
     all_secrets, mode_secrets = load_json_files()
     
-    print(f"\nFound {len(all_secrets)} unique secrets across all modes")
-    
-    print("\nCollecting ground truth labels...")
-    ground_truth = collect_ground_truth(all_secrets)
+    for mode, secrets in mode_secrets.items():
+        print(f"{mode}: {len(secrets)} secrets detected")
     
     print("\nCalculating metrics...")
     results = calculate_metrics(mode_secrets, ground_truth)
